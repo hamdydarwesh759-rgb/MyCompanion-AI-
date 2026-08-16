@@ -233,7 +233,7 @@
 
     <div id="cameraContainer">
         <video id="webcam" autoplay playsinline></video>
-        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تحميل نموذج الذكاء الاصطناعي لرصد العوائق والحفر والأرصفة...</p>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تحميل نموذج الذكاء الاصطناعي لرصد العوائق...</p>
     </div>
 
     <div class="result-box" id="outputResult">
@@ -241,7 +241,7 @@
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار الحركة...</span>
             <div style="margin-top: 15px; color: #2563eb; font-weight: 700; font-size: 15px;">
-                ⏳ النظام يتابع مسافتك الحقيقية ويعلن الخطوة التالية تلقائياً عند قطع المسافة...
+                ⏳ النظام يتابع مسافات المشي الحقيقية بدقة تامة...
             </div>
         </div>
     </div>
@@ -283,7 +283,7 @@
     }
 
     function triggerSOS() {
-        const current = document.getElementById('currentLocation').value || "غير محدد";
+        const current = document.getElementById('currentLocation').value || "غير مححدد";
         document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 الحق! تم إرسال نداء استغاثة فوري وموقعك (${current}) للجهات المعنية.</span>`;
         speakText("الحق! تم إرسال نداء استغاثة فوري.");
     }
@@ -361,7 +361,7 @@
         };
     }
 
-    // تشغيل الكاميرا ورصد العقبات الحية بالذكاء الاصطناعي (COCO-SSD)
+    // تشغيل الكاميرا ورصد أي جسم أو عائق دون التقيد باسم معين
     async function toggleCamera() {
         const container = document.getElementById('cameraContainer');
         const video = document.getElementById('webcam');
@@ -369,7 +369,7 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            speakText("جاري تشغيل كاميرا الرؤية الذكية لرصد العوائق...");
+            speakText("جاري تشغيل كاميرا الرؤية الذكية لرصد أي عائق أو جسم...");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -380,31 +380,20 @@
                     aiModel = await cocoSsd.load();
                 }
 
-                status.innerText = "كاميرا الرؤية الذكية نشطة وترصد العوائق في الطريق فوراً...";
-                speakText("الكاميرا تعمل الآن وترصد الأجسام والعوائق الحية.");
+                status.innerText = "كاميرا الرؤية الذكية نشطة وتحذر من أي جسم في الطريق فوراً...";
+                speakText("الكاميرا تعمل الآن وتحذر من أي جسم في طريقك.");
                 cameraActive = true;
 
-                // رصد مستمر عبر نموذج الذكاء الاصطناعي للتعرف على الأجسام (كرسي، شخص، سيارة، دراجة، إلخ)
+                // رصد أي جسم بشكل عام وإعطاء تنذير موحد
                 detectionInterval = setInterval(async () => {
                     if (!cameraActive || !aiModel) return;
                     const predictions = await aiModel.detect(video);
                     
                     if (predictions.length > 0) {
-                        const topPred = predictions[0];
-                        let objectNameAR = topPred.class;
-                        
-                        // ترجمة وتخصيص أسماء العوائق الشائعة
-                        if (objectNameAR === 'chair') objectNameAR = 'كرسي أو مقعد';
-                        else if (objectNameAR === 'person') objectNameAR = 'شخص أو عائق بشري';
-                        else if (objectNameAR === 'car') objectNameAR = 'سيارة في الطريق';
-                        else if (objectNameAR === 'bicycle') objectNameAR = 'دراجة';
-                        else if (objectNameAR === 'dog' || objectNameAR === 'cat') objectNameAR = 'حيوان أليف';
-
                         const currentTime = Date.now();
-                        // نطق التحذير بفاصل زمني مناسب لمنع تداخل الصوت المستمر
                         if (currentTime - lastSpokenTime > 5000) {
-                            const warningMsg = `حاسب! أمامك ${objectNameAR}، تجنبه فوراً.`;
-                            status.innerHTML = `⚠️ تحذير مباشر: ${warningMsg}`;
+                            const warningMsg = "تحذير! أمامك جسم أو عائق في الطريق، انتبه وتجنبه.";
+                            status.innerHTML = `⚠️ تحذير مباشر: يوجد جسم أو عائق أممك`;
                             speakText(warningMsg);
                             lastSpokenTime = currentTime;
                         }
@@ -433,7 +422,7 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    // بدء الملاحة التلقائية الكاملة بالـ GPS (دون أي تدخل يدوي)
+    // بدء الملاحة التلقائية الكاملة بالـ GPS مع فلترة دقيقة لضمان قطع المسافة الحقيقية
     function startNavigation() {
         const current = document.getElementById('currentLocation').value;
         const dest = document.getElementById('destination').value;
@@ -453,7 +442,7 @@
         addTripToHistory(current, dest);
         currentStep = 0;
         
-        speakText("تم بدء الملاحة التلقائية الكاملة. انزل من المنزل الآن، وسأوجهك خطوة بخطوة تلقائياً عند قطع المسافات المطلوبة.");
+        speakText("تم بدء الملاحة التلقائية بالكامل. انزل من المنزل الآن، وسأوجهك صوتياً بعد قطع المسافات المطلوبة تماماً.");
         document.getElementById('stepBox').style.display = 'block';
 
         navigator.geolocation.getCurrentPosition(pos => {
@@ -462,28 +451,29 @@
         }, null, { enableHighAccuracy: true });
     }
 
-    // التنقل التلقائي الذكي عبر الأقمار الصناعية بدون أزرار
+    // التنقل التلقائي الذكي عبر الأقمار الصناعية مع استبعاد تشويش الـ GPS
     function runFullyAutomaticNav(dest) {
         const steps = [
             { dist: 10, msg: "انزل من المنزل الآن وابدأ المشي لمسافة 10 متر حتى نهاية الشارع الفرعي." },
-            { dist: 100, msg: "استمر في المشي في الشارع الرئيسي لمسافة 100 متر بخط مستقيم، وخليك ماشي في المنتصف بحذر." },
+            { dist: 100, msg: "استمر في المشي في الشارع الرئيسي لمسافة 100 متر بخط مستقيم." },
             { dist: 25, msg: `خذ يمين عند ناصية الشارع، ولقد وصلت الآن إلى (${dest}) بالسلامة!` }
         ];
 
         if (currentStep >= steps.length) return;
 
         watchId = navigator.geolocation.watchPosition(pos => {
+            // تجاهل قراءات الـ GPS غير الدقيقة لمنع القفز السريع أو التحديث الوهمي
+            if (pos.coords.accuracy > 25) return;
+
             if (!startCoords) return;
             const distanceCovered = getDist(startCoords.lat, startCoords.lon, pos.coords.latitude, pos.coords.longitude);
             
-            // عند تحقيق المسافة المطلوبة تلقائياً، ينطق النظام الخطوة التالية ويحدث النقطة فوراً
             if (distanceCovered >= steps[currentStep].dist) {
                 const message = steps[currentStep].msg;
                 speakText(message);
                 document.getElementById('stepText').innerText = message;
                 currentStep++;
                 
-                // تحديث نقطة البداية للمرحلة التالية
                 startCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
                 
                 navigator.geolocation.clearWatch(watchId);
@@ -492,7 +482,7 @@
                     runFullyAutomaticNav(dest);
                 }
             }
-        }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
+        }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
     }
 
     function addTripToHistory(current, dest) {

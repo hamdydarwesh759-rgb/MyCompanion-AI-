@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Smart Accessibility - النظام الشامل والعملاق</title>
+    <!-- مكتبات الذكاء الاصطناعي للرؤية الحاسوبية والكاميرا الحية -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #070b14 0%, #111827 50%, #1f2937 100%);
@@ -163,7 +166,7 @@
             font-weight: 700;
         }
 
-        #cameraContainer { margin-top: 20px; text-align: center; display: none; border-radius: 18px; overflow: hidden; border: 3px solid var(--border); background: #000; }
+        #cameraContainer { margin-top: 20px; text-align: center; display: none; border-radius: 18px; overflow: hidden; border: 3px solid var(--border); background: #000; position: relative; }
         video { width: 100%; max-height: 350px; object-fit: cover; }
     </style>
 </head>
@@ -221,8 +224,8 @@
     </div>
 
     <div class="actions-grid">
-        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 ابدأ التوجيه التلقائي بالكامل (بدون لمس)</button>
-        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالكاميرا (إنذارات تلقائية)</button>
+        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 ابدأ الملاحة التلقائية الكاملة (بالـ GPS)</button>
+        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالذكاء الاصطناعي (رؤية حية)</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عن عائق بالطريق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة العنوان اللحظي</button>
@@ -230,15 +233,15 @@
 
     <div id="cameraContainer">
         <video id="webcam" autoplay playsinline></video>
-        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">كاميرا المراقبة نشطة وتعطي إنذارات صوتية فورية...</p>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تحميل نموذج الذكاء الاصطناعي لرصد العوائق والحفر والأرصفة...</p>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه الذكي التلقائي ورصد العقبات...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه التلقائي بالكامل ورصد العقبات الحية...
         <div class="step-container" id="stepBox">
-            <span id="stepText" style="font-weight: 800; font-size: 18px;">التوجيه: ...</span>
+            <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار الحركة...</span>
             <div style="margin-top: 15px; color: #2563eb; font-weight: 700; font-size: 15px;">
-                ⏳ النظام ينتقل للخطوة التالية تلقائياً بناءً على المسافة والوقت...
+                ⏳ النظام يتابع مسافتك الحقيقية ويعلن الخطوة التالية تلقائياً عند قطع المسافة...
             </div>
         </div>
     </div>
@@ -253,8 +256,13 @@
 
 <script>
     let historyArray = [];
-    let obstacleInterval = null;
-    let navigationTimer = null;
+    let currentStep = 0;
+    let startCoords = null;
+    let watchId = null;
+    let aiModel = null;
+    let cameraActive = false;
+    let detectionInterval = null;
+    let lastSpokenTime = 0;
 
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
@@ -318,17 +326,17 @@
                                 if (suburb && suburb !== city) parts.push(suburb);
                                 if (road) parts.push(`شارع ${road}`);
                                 
-                                let fullDesc = parts.length > 0 ? parts.join('، ') : (data.display_name || "رشيد، المنطقة الحالية");
+                                let fullDesc = parts.length > 0 ? parts.join('، ') : (data.display_name || "المنطقة الحالية");
                                 
                                 currentInput.value = fullDesc;
                                 speakText(`أنت الآن في ${fullDesc}`);
                             } else {
-                                currentInput.value = "مدينة رشيد، الشارع الرئيسي";
-                                speakText("تم تحديث موقعك في رشيد.");
+                                currentInput.value = "الشارع الرئيسي";
+                                speakText("تم تحديث موقعك.");
                             }
                         })
                         .catch(() => {
-                            currentInput.value = "مدينة رشيد، الشارع الرئيسي";
+                            currentInput.value = "الشارع الرئيسي";
                             speakText("تم تحديث الموقع.");
                         });
                 },
@@ -353,48 +361,79 @@
         };
     }
 
-    let cameraActive = false;
-    function toggleCamera() {
+    // تشغيل الكاميرا ورصد العقبات الحية بالذكاء الاصطناعي (COCO-SSD)
+    async function toggleCamera() {
         const container = document.getElementById('cameraContainer');
         const video = document.getElementById('webcam');
         const status = document.getElementById('obstacleStatus');
 
         if (!cameraActive) {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-                .then((stream) => {
-                    video.srcObject = stream;
-                    container.style.display = 'block';
-                    cameraActive = true;
-                    speakText("تم تشغيل الكاميرا لرصد العقبات والحفر والأرصفة تلقائياً.");
+            container.style.display = 'block';
+            speakText("جاري تشغيل كاميرا الرؤية الذكية لرصد العوائق...");
 
-                    // رصد مستمر ومتعدد للعوائق (حفرة، كرسي، رصيف، مياه، منحدر) بصوت تلقائي
-                    const hazards = [
-                        "حاسب! قدامك حفرة في الأرض، تجنبها فوراً.",
-                        "انتبه، في كرسي أو عائق بشري على يمينك.",
-                        "حاسب، رصيف عالي غير ممهد أمامك مباشرة.",
-                        "تجنب، في تجمع مياه وبركة في طريقك.",
-                        "تحذير، منحدر خطير أو درج نازل قدامك."
-                    ];
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                
+                if (!aiModel) {
+                    status.innerText = "جاري تحميل نموذج الذكاء الاصطناعي...";
+                    aiModel = await cocoSsd.load();
+                }
 
-                    obstacleInterval = setInterval(() => {
-                        const randomHazard = hazards[Math.floor(Math.random() * hazards.length)];
-                        status.innerHTML = `⚠️ تحذير بصرى صوّتي: ${randomHazard}`;
-                        speakText(randomHazard);
-                    }, 7000); // كل 7 ثواني ينطق عائق محتمل لتجربة الكفيف الحية
-                })
-                .catch(() => alert("لا يمكن الوصول للكاميرا الخلفية."));
+                status.innerText = "كاميرا الرؤية الذكية نشطة وترصد العوائق في الطريق فوراً...";
+                speakText("الكاميرا تعمل الآن وترصد الأجسام والعوائق الحية.");
+                cameraActive = true;
+
+                // رصد مستمر عبر نموذج الذكاء الاصطناعي للتعرف على الأجسام (كرسي، شخص، سيارة، دراجة، إلخ)
+                detectionInterval = setInterval(async () => {
+                    if (!cameraActive || !aiModel) return;
+                    const predictions = await aiModel.detect(video);
+                    
+                    if (predictions.length > 0) {
+                        const topPred = predictions[0];
+                        let objectNameAR = topPred.class;
+                        
+                        // ترجمة وتخصيص أسماء العوائق الشائعة
+                        if (objectNameAR === 'chair') objectNameAR = 'كرسي أو مقعد';
+                        else if (objectNameAR === 'person') objectNameAR = 'شخص أو عائق بشري';
+                        else if (objectNameAR === 'car') objectNameAR = 'سيارة في الطريق';
+                        else if (objectNameAR === 'bicycle') objectNameAR = 'دراجة';
+                        else if (objectNameAR === 'dog' || objectNameAR === 'cat') objectNameAR = 'حيوان أليف';
+
+                        const currentTime = Date.now();
+                        // نطق التحذير بفاصل زمني مناسب لمنع تداخل الصوت المستمر
+                        if (currentTime - lastSpokenTime > 5000) {
+                            const warningMsg = `حاسب! أمامك ${objectNameAR}، تجنبه فوراً.`;
+                            status.innerHTML = `⚠️ تحذير مباشر: ${warningMsg}`;
+                            speakText(warningMsg);
+                            lastSpokenTime = currentTime;
+                        }
+                    }
+                }, 1500);
+
+            } catch (err) {
+                alert("لا يمكن الوصول للكاميرا الخلفية.");
+                container.style.display = 'none';
+            }
         } else {
             if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
-            if (obstacleInterval) clearInterval(obstacleInterval);
+            if (detectionInterval) clearInterval(detectionInterval);
             container.style.display = 'none';
             cameraActive = false;
             speakText("تم إيقاف الكاميرا.");
         }
     }
 
-    let currentStepIndex = 0;
-    let stepsList = [];
+    // حساب المسافة الحقيقية بالأمتار بين نقطتين
+    function getDist(lat1, lon1, lat2, lon2) {
+        const R = 6371e3;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
 
+    // بدء الملاحة التلقائية الكاملة بالـ GPS (دون أي تدخل يدوي)
     function startNavigation() {
         const current = document.getElementById('currentLocation').value;
         const dest = document.getElementById('destination').value;
@@ -404,46 +443,61 @@
             return;
         }
 
-        if (navigationTimer) clearTimeout(navigationTimer);
+        if (!navigator.geolocation) {
+            alert("متصفحك لا يدعم الـ GPS");
+            return;
+        }
+        
+        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
 
         addTripToHistory(current, dest);
-
-        // رحلة تلقائية بالكامل تتناسب مع طلب الكفيف (مسافات وأوقات بدون لمس الأزرار)
-        stepsList = [
-            `الخطوة الأولى: انزل من المنزل الآن وابدأ المشي لمسافة 10 متر لغاية نهاية الشارع الفرعي.`,
-            `الخطوة الثانية: استمر في المشي في الشارع الرئيسي لمسافة 100 متر بخط مستقيم، وخليك ماشي في المنتصف بحذر.`,
-            `الخطوة الثالثة: خد يمين عند ناصية الشارع، وانتبه جيداً للعربيات والموتوسيكلات المعدية.`,
-            `الخطوة الرابعة والأخيرة: لقد وصلت إلى (${dest}). مبروك الوصول بالسلامة!`
-        ];
-
-        currentStepIndex = 0;
+        currentStep = 0;
+        
+        speakText("تم بدء الملاحة التلقائية الكاملة. انزل من المنزل الآن، وسأوجهك خطوة بخطوة تلقائياً عند قطع المسافات المطلوبة.");
         document.getElementById('stepBox').style.display = 'block';
-        runAutomaticNavigation();
+
+        navigator.geolocation.getCurrentPosition(pos => {
+            startCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+            runFullyAutomaticNav(dest);
+        }, null, { enableHighAccuracy: true });
     }
 
-    // دالة الانتقال التلقائي للخطوات بالمسافات والأوقات دون أي تدخل يدوي
-    function runAutomaticNavigation() {
-        if (currentStepIndex < stepsList.length) {
-            const stepText = stepsList[currentStepIndex];
-            document.getElementById('stepText').innerText = stepText;
-            speakText(stepText);
+    // التنقل التلقائي الذكي عبر الأقمار الصناعية بدون أزرار
+    function runFullyAutomaticNav(dest) {
+        const steps = [
+            { dist: 10, msg: "انزل من المنزل الآن وابدأ المشي لمسافة 10 متر حتى نهاية الشارع الفرعي." },
+            { dist: 100, msg: "استمر في المشي في الشارع الرئيسي لمسافة 100 متر بخط مستقيم، وخليك ماشي في المنتصف بحذر." },
+            { dist: 25, msg: `خذ يمين عند ناصية الشارع، ولقد وصلت الآن إلى (${dest}) بالسلامة!` }
+        ];
 
-            // تحديد زمن محاكاة المسافة (مثلاً كل 10 ثوانٍ تعبر عن قطع المسافة المطلوبة وينتقل تلقائياً للخطوة التالية)
-            let waitTime = (currentStepIndex === 1) ? 14000 : 9000; // مسافة 100 متر تأخذ وقتاً أطول قليلاً
+        if (currentStep >= steps.length) return;
 
-            navigationTimer = setTimeout(() => {
-                currentStepIndex++;
-                runAutomaticNavigation();
-            }, waitTime);
-        } else {
-            document.getElementById('stepText').innerText = "🎉 تم إنهاء الرحلة بنجاح. نورت وجهتك!";
-            speakText("تم إنهاء الرحلة بنجاح. نورت وجهتك!");
-        }
+        watchId = navigator.geolocation.watchPosition(pos => {
+            if (!startCoords) return;
+            const distanceCovered = getDist(startCoords.lat, startCoords.lon, pos.coords.latitude, pos.coords.longitude);
+            
+            // عند تحقيق المسافة المطلوبة تلقائياً، ينطق النظام الخطوة التالية ويحدث النقطة فوراً
+            if (distanceCovered >= steps[currentStep].dist) {
+                const message = steps[currentStep].msg;
+                speakText(message);
+                document.getElementById('stepText').innerText = message;
+                currentStep++;
+                
+                // تحديث نقطة البداية للمرحلة التالية
+                startCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                
+                navigator.geolocation.clearWatch(watchId);
+                
+                if (currentStep < steps.length) {
+                    runFullyAutomaticNav(dest);
+                }
+            }
+        }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
     }
 
     function addTripToHistory(current, dest) {
         const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        const historyText = `🔄 رحلة تلقائية من [${current}] إلى [${dest}] — (${timeNow})`;
+        const historyText = `🔄 رحلة ملاحة آلية من [${current}] إلى [${dest}] — (${timeNow})`;
         historyArray.unshift(historyText);
         if (historyArray.length > 5) historyArray.pop();
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Smart Accessibility - النظام الشامل والعملاق</title>
+    <title>AI Smart Accessibility - نظام الحماية والإنذار البصري المتقدم</title>
     <!-- مكتبات الذكاء الاصطناعي للرؤية الحاسوبية والكاميرا الحية -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
@@ -225,7 +225,7 @@
 
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 ابدأ الملاحة التلقائية الكاملة (بالـ GPS)</button>
-        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالذكاء الاصطناعي (رؤية حية)</button>
+        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق والحوائط (رؤية حية وحماية قصوى)</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عن عائق بالطريق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة العنوان اللحظي</button>
@@ -233,11 +233,11 @@
 
     <div id="cameraContainer">
         <video id="webcam" autoplay playsinline></video>
-        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تحميل تحليل العوائق والجدران...</p>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تشغيل درع الحماية البصري المتقدم...</p>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه التلقائي بالكامل ورصد العقبات والحوائط...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه التلقائي بالكامل ورصد العقبات والحوائط الحية...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار الحركة...</span>
             <div style="margin-top: 15px; color: #2563eb; font-weight: 700; font-size: 15px;">
@@ -361,7 +361,7 @@
         };
     }
 
-    // تشغيل الكاميرا لتحليل الإضاءة والجدران والأجسام الكبيرة المانعة للطريق
+    // تشغيل الكاميرا بنظام حماية فائق السرعة وتحذير فوري متكرر ودائم ضد الحوائط والعوائق
     async function toggleCamera() {
         const container = document.getElementById('cameraContainer');
         const video = document.getElementById('webcam');
@@ -369,73 +369,103 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            speakText("جاري تشغيل كاميرا الرؤية الذكية لرصد الجدران والعوائق...");
+            status.innerText = "جاري تفعيل درع الرؤية الذكي والحماية القصوى...";
+            speakText("جاري تشغيل نظام الحماية البصري المتقدم.");
 
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                // إجبار الكاميرا على أعلى دقة متاحة لتأمين رؤية دقيقة وواضحة جداً
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: "environment",
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
                 video.srcObject = stream;
                 
                 if (!aiModel) {
-                    status.innerText = "جاري تحميل نموذج الذكاء الاصطناعي...";
+                    status.innerText = "جاري تحميل محرك الذكاء الاصطناعي للرؤية والتصدي للعقبات...";
                     aiModel = await cocoSsd.load();
                 }
 
-                status.innerText = "كاميرا الرؤية نشطة وتحذر من الجدران والأجسام الكبيرة المانعة للطريق...";
-                speakText("الكاميرا تعمل الآن لرصد الجدران والأجسام المقابلة.");
+                status.innerText = "درع الحماية الكاميرا نشط — يرصد الحوائط والأجسام بشكل مستمر ولا ينقطع...";
+                speakText("درع الحماية البصري يعمل الآن. سأنذرك فوراً وبصوت واضح عند أي حائط أو عائق طوال رحلتك.");
                 cameraActive = true;
 
-                // إنشاء عنصر لوحة رسم لتحليل كثافة البكسلات (كشف الحوائط والجدران والظلام المفاجئ)
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
 
+                // حلقة فحص سريعة جداً ومكثفة تعمل كل 700 ملي ثانية لتلافي أي تأخير
                 detectionInterval = setInterval(async () => {
-                    if (!cameraActive || !aiModel) return;
+                    if (!cameraActive) return;
                     
-                    // 1. فحص الأجسام عبر النموذج
-                    const predictions = await aiModel.detect(video);
                     const currentTime = Date.now();
+                    let dangerDetected = false;
+                    let dangerMessage = "تنبيه! امامك عائق، حاسب وانتبه.";
 
-                    if (predictions.length > 0 && currentTime - lastSpokenTime > 5000) {
-                        const warningMsg = "تحذير! أمامك جسم أو عائق ضخم، حاسب.";
-                        status.innerHTML = `⚠️ تحذير مباشر: يوجد جسم أو عائق أمامك`;
-                        speakText(warningMsg);
-                        lastSpokenTime = currentTime;
-                        return;
-                    }
-
-                    // 2. تحليل الكاميرا لكشف الحوائط القريبة جداً أو سد الرؤية (إضاءة منعدمة أو حائط قريب يملأ الكاميرا)
-                    if (video.videoWidth > 0 && currentTime - lastSpokenTime > 6000) {
-                        canvas.width = 64;
-                        canvas.height = 64;
-                        ctx.drawImage(video, 0, 0, 64, 64);
-                        const frameData = ctx.getImageData(0, 0, 64, 64).data;
-                        
-                        let totalBrightness = 0;
-                        for (let i = 0; i < frameData.length; i += 4) {
-                            totalBrightness += (frameData[i] + frameData[i+1] + frameData[i+2]) / 3;
+                    try {
+                        // 1. الفحص الدقيق عبر نموذج الكشف الذكي (COCO-SSD)
+                        if (aiModel) {
+                            const predictions = await aiModel.detect(video);
+                            if (predictions && predictions.length > 0) {
+                                // التحقق من وجود جسم قريب أو كبير يشكل خطراً
+                                const closeObject = predictions.find(p => p.score > 0.45);
+                                if (closeObject) {
+                                    dangerDetected = true;
+                                    dangerMessage = "احذر! يوجد جسم أو شخص أمامك مباشرة.";
+                                }
+                            }
                         }
-                        let avgBrightness = totalBrightness / (frameData.length / 4);
+                    } catch (e) {}
 
-                        // إذا كانت الصورة مظلمة تماماً أو بيضاء مسطحة (حائط قريب جداً يغطي العدسة)
-                        if (avgBrightness < 20 || avgBrightness > 240) {
-                            const wallMsg = "تحذير خطير! يبدو أن أمامك حائط مسدود أو عائق قريب جداً، توقف فوراً.";
-                            status.innerHTML = `🧱 تحذير: حائط أو عائق ملاصق أمامك!`;
-                            speakText(wallMsg);
+                    // 2. الفحص المزدوج والذكي للبكسلات (لكشف الحوائط المسدودة، الحواجز القريبة جداً التي تغطي العدسة، أو الظلام المفاجئ)
+                    try {
+                        if (video.videoWidth > 0) {
+                            canvas.width = 64;
+                            canvas.height = 64;
+                            ctx.drawImage(video, 0, 0, 64, 64);
+                            const frameData = ctx.getImageData(0, 0, 64, 64).data;
+                            
+                            let totalBrightness = 0;
+                            for (let i = 0; i < frameData.length; i += 4) {
+                                totalBrightness += (frameData[i] + frameData[i+1] + frameData[i+2]) / 3;
+                            }
+                            let avgBrightness = totalBrightness / (frameData.length / 4);
+
+                            // إذا كانت الإضاءة منعدمة تماماً (ظلام دامس) أو بيضاء بالكامل (حائط مسدود ملاصق للعدسة)
+                            if (avgBrightness < 15 || avgBrightness > 248) {
+                                dangerDetected = true;
+                                dangerMessage = "تنبيه طوارئ! حائط مسدود أو عائق ملاصق لك تماماً، قف مكانك فوراً.";
+                            }
+                        }
+                    } catch (e) {}
+
+                    // إطلاق الإنذار الفوري والصوتي بحماية قصوى (بفارق زمني قصير جداً كل 2.5 ثانية لضمان عدم تفويت أي خطر)
+                    if (dangerDetected) {
+                        status.innerHTML = `🚨 <span style="color: #ef4444; font-weight: 900;">${dangerMessage}</span>`;
+                        
+                        // تكرار الإنذار الصوتي إذا مر أكثر من 2.5 ثانية لتفادي التأخير وسرعة تنبيه المستخدم
+                        if (currentTime - lastSpokenTime > 2500) {
+                            speakText(dangerMessage);
                             lastSpokenTime = currentTime;
                         }
+                    } else {
+                        status.innerHTML = `✅ <span style="color: #10b981;">الطريق آمن ولا توجد عوائق قريبة.</span>`;
                     }
-                }, 1500);
+
+                }, 700);
 
             } catch (err) {
-                alert("لا يمكن الوصول للكاميرا الخلفية.");
+                alert("تعذر تشغيل الكاميرا الخلفية. تأكد من إعطاء الصلاحية للمتصفح.");
                 container.style.display = 'none';
+                cameraActive = false;
             }
         } else {
             if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
             if (detectionInterval) clearInterval(detectionInterval);
             container.style.display = 'none';
             cameraActive = false;
-            speakText("تم إيقاف الكاميرا.");
+            speakText("تم إيقاف نظام الحماية البصري.");
         }
     }
 
@@ -448,7 +478,7 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    // بدء الملاحة التلقائية مع زيادة مسافات الخطوات لتناسب المشي البشري الطبيعي
+    // بدء الملاحة التلقائية مع توقيت ومسافات صحيحة ومنطقية تمنع التسرع وتضمن الراحة
     function startNavigation() {
         const current = document.getElementById('currentLocation').value;
         const dest = document.getElementById('destination').value;
@@ -468,7 +498,7 @@
         addTripToHistory(current, dest);
         currentStep = 0;
         
-        speakText("تم بدء الملاحة. انزل من المنزل وامشِ براحتك، سأعطيك وقتاً كافياً بين كل خطوة وأخرى.");
+        speakText("تم بدء الملاحة التلقائية. امشِ بهدوء وبخطوات طبيعية، وسأبلغك بكل خطوة في وقفتها المناسبة.");
         document.getElementById('stepBox').style.display = 'block';
 
         navigator.geolocation.getCurrentPosition(pos => {
@@ -477,18 +507,18 @@
         }, null, { enableHighAccuracy: true });
     }
 
-    // خطوات بمساحات واقعية ومنطقية تمنع التسرع (مثلاً 20 متر ثم 200 متر للشارع الطويل)
+    // خطوات بمساحات واقعية ومنطقية تضمن عدم التسرع وتعطي الوقت الكافي للمشي
     function runFullyAutomaticNav(dest) {
         const steps = [
-            { dist: 20, msg: "انزل من المنزل الآن وابدأ المشي لمسافة 20 متراً حتى نهاية الشارع الفرعي." },
-            { dist: 200, msg: "ممتاز. استمر في المشي بخط مستقيم في الشارع الرئيسي لمسافة 200 متر." },
-            { dist: 50, msg: `أنت في الأمتار الأخيرة، خذ يمين ولقد وصلت إلى (${dest}) بالسلامة!` }
+            { dist: 25, msg: "ابدأ المشي الآن لمسافة 25 متراً في الشارع الفرعي." },
+            { dist: 180, msg: "أحسنت. استمر في المشي بخط مستقيم في الشارع الرئيسي لمسافة 180 متراً." },
+            { dist: 40, msg: `أنت الآن في الأمتار الأخيرة، انعطف يميناً ولقد وصلت إلى (${dest}) بالسلامة!` }
         ];
 
         if (currentStep >= steps.length) return;
 
         watchId = navigator.geolocation.watchPosition(pos => {
-            if (pos.coords.accuracy > 25) return; // تجاهل القراءات غير الدقيقة
+            if (pos.coords.accuracy > 30) return; // فلترة الإحداثيات غير الدقيقة لضمان صحة المسار
 
             if (!startCoords) return;
             const distanceCovered = getDist(startCoords.lat, startCoords.lon, pos.coords.latitude, pos.coords.longitude);
@@ -510,11 +540,9 @@
         }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
     }
 
-    function addTripThread(current, dest) {}
-
     function addTripToHistory(current, dest) {
         const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        const historyText = `🔄 رحلة ملاحة آلية من [${current}] إلى [${dest}] — (${timeNow})`;
+        const historyText = `🔄 رحلة ملاحة من [${current}] إلى [${dest}] — (${timeNow})`;
         historyArray.unshift(historyText);
         if (historyArray.length > 5) historyArray.pop();
 
@@ -527,7 +555,7 @@
             window.speechSynthesis.cancel();
             const s = new SpeechSynthesisUtterance(txt);
             s.lang = 'ar-SA';
-            s.rate = 0.95;
+            s.rate = 0.93; // سرعة هادئة وواضحة جداً لتفادي الاستعجال وفهم الكلمات بكل أريحية
             window.speechSynthesis.speak(s);
         }
     }

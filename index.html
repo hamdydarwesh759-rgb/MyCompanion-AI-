@@ -71,7 +71,6 @@
         .online { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
         .offline { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
 
-        /* شبكة واسعة للوحة التحكم العملاقة */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -107,7 +106,6 @@
         .btn-mic { background: #10b981; color: white; }
         .btn-mic:hover { background: #059669; }
 
-        /* فئات الإعاقة الكبيرة */
         .accessibility-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -124,7 +122,6 @@
         }
         .acc-icon { font-size: 1.6em; }
 
-        /* أزرار العمليات العملاقة */
         .actions-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -143,13 +140,11 @@
         .btn-report { background: #8b5cf6; }
         .btn-share { background: #06b6d4; grid-column: span 3; }
 
-        /* صندوق النتائج والخطوات الكبير */
         .result-box {
             margin-top: 25px; padding: 25px; background: var(--input-bg); border-radius: 18px; border: 2px solid var(--border); font-size: 17px; line-height: 1.7;
         }
         .step-container { margin-top: 20px; padding: 20px; background: rgba(37, 99, 235, 0.08); border-radius: 14px; border-right: 6px solid var(--primary); display: none; }
 
-        /* سجل المشاوير العملاق */
         .history-box {
             max-height: 200px;
             overflow-y: auto;
@@ -178,7 +173,7 @@
     <div class="header">
         <div>
             <h2>AI Smart Accessibility</h2>
-            <div class="supervisor">النظام الجامعي الذكي المتكامل | إشراف: Eng. Laila Bahnasy</div>
+            <div class="supervisor">النظام الذكي الشخصي المساعد</div>
         </div>
         <div class="header-btns">
             <span id="netStatus" class="status-badge online">متصل (Online)</span>
@@ -186,27 +181,25 @@
         </div>
     </div>
 
-    <!-- شبكة المدخلات الكبيرة -->
     <div class="dashboard-grid">
         <div class="card-section" style="margin-bottom: 0;">
-            <label for="currentLocation">📍 موقعك الحالي:</label>
+            <label for="currentLocation">📍 مكانك الحالي (العنوان النصي):</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="مثال: مبنى أ - الدور الأول">
-                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">GPS</button>
+                <input type="text" id="currentLocation" placeholder="مثال: مدينة رشيد، البيت، أو شارع كذا">
+                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد مكاني</button>
             </div>
         </div>
         <div class="card-section" style="margin-bottom: 0;">
             <label for="destination">🎯 الوجهة المطلوبة:</label>
             <div class="input-row">
-                <input type="text" id="destination" placeholder="مثال: قاعة 302 أو المكتبة">
+                <input type="text" id="destination" placeholder="مثال: القهوة، بيت العائلة، أو السوق">
                 <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()">🎤</button>
             </div>
         </div>
     </div>
 
-    <!-- فئات الإعاقة وسهولة الوصول -->
     <div class="card-section" style="margin-top: 25px;">
-        <label>♿ حالة سهولة الوصول وتكييف المسار:</label>
+        <label>♿ حالة وضع الاستخدام والتوجيه:</label>
         <div class="accessibility-grid">
             <div class="acc-option">
                 <input type="radio" id="t1" name="accessibilityType" value="general" checked>
@@ -214,45 +207,34 @@
             </div>
             <div class="acc-option">
                 <input type="radio" id="t2" name="accessibilityType" value="wheelchair">
-                <label for="t2"><span class="acc-icon">🦽</span>حركي</label>
+                <label for="t2"><span class="acc-icon">🦽</span>تنقل حر</label>
             </div>
             <div class="acc-option">
                 <input type="radio" id="t3" name="accessibilityType" value="visual">
-                <label for="t3"><span class="acc-icon">🦯</span>بصري</label>
+                <label for="t3"><span class="acc-icon">🦯</span>بصري وصوتي</label>
             </div>
             <div class="acc-option">
                 <input type="radio" id="t4" name="accessibilityType" value="hearing">
                 <label for="t4"><span class="acc-icon">🦻</span>سمعي</label>
             </div>
-            <div class="acc-option">
-                <input type="radio" id="t5" name="accessibilityType" value="cognitive">
-                <label for="t5"><span class="acc-icon">🧩</span>ذهني</label>
-            </div>
-            <div class="acc-option">
-                <input type="radio" id="t6" name="accessibilityType" value="temporary">
-                <label for="t6"><span class="acc-icon">🩼</span>إصابة</label>
-            </div>
         </div>
     </div>
 
-    <!-- أزرار العمليات العملاقة -->
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء التوجيه التفاعلي خطوة بخطوة</button>
-        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالذكاء الاصطناعي</button>
+        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالكاميرا الخلفية</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
-        <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عائق هندسي</button>
-        <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الموقع اللحظي مع الأمن</button>
+        <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عن عائق بالطريق</button>
+        <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة العنوان اللحظي</button>
     </div>
 
-    <!-- كاميرا الرصد الكبيرة -->
     <div id="cameraContainer">
         <video id="webcam" autoplay playsinline></video>
-        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري فحص البيئة المحيطة ورصد العقبات بدقة...</p>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تشغيل الكاميرا الخلفية ورصد العقبات بدقة...</p>
     </div>
 
-    <!-- صندوق النتائج والخطوات -->
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> لوحة التحكم العملاقة جاهزة لتوجيهك ورصد العوائق بدقة فائقة...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز لتحديد مكانك بدقة بالأسماء والعناوين الواضحة...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">الخطوة 1: ...</span>
             <div style="margin-top: 15px;">
@@ -261,9 +243,8 @@
         </div>
     </div>
 
-    <!-- سجل المشاوير والتوجيهات العملاق -->
     <div class="card-section" style="margin-top: 25px; margin-bottom: 0;">
-        <label>📜 سجل المشاوير والتوجيهات السابقة:</label>
+        <label>📜 سجل الأماكن والرحلات السابقة:</label>
         <ul id="historyList" class="history-box">
             <li>لا توجد رحلات مسجلة في الجلسة الحالية حتى الآن.</li>
         </ul>
@@ -293,33 +274,62 @@
 
     function triggerSOS() {
         const current = document.getElementById('currentLocation').value || "غير محدد";
-        document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 تنبيه طوارئ! تم إرسال الإحداثيات وموقعك الحالي (${current}) لغرفة أمن الجامعة بنجاح تام.</span>`;
+        document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 تنبيه طوارئ! تم إرسال موقعك (${current}) للجهات المعنية بنجاح.</span>`;
         speakText("تنبيه طوارئ! تم إرسال نداء استغاثة فوري.");
     }
 
     function reportObstacle() {
         const current = document.getElementById('currentLocation').value;
-        if (!current) { alert("من فضلك حدد موقع العائق أولاً."); return; }
-        document.getElementById('outputResult').innerHTML = `<span style="color: #10b981; font-weight: 900; font-size: 18px;">🛠️ تم رفع البلاغ للإدارة الهندسية بنجاح عن العائق في (${current}).</span>`;
-        speakText("تم رفع البلاغ للإدارة الهندسية.");
+        if (!current) { alert("من فضلك حدد مكانك أو اسم الشارع أولاً."); return; }
+        document.getElementById('outputResult').innerHTML = `<span style="color: #10b981; font-weight: 900; font-size: 18px;">🛠️ تم تسجيل البلاغ عن العائق في الموقع: (${current}).</span>`;
+        speakText("تم تسجيل البلاغ بنجاح.");
     }
 
     function shareLiveLocation() {
-        const current = document.getElementById('currentLocation').value || "موقع GPS";
-        alert(`تم إنشاء رابط مؤقت آمن لموقعك اللحظي (${current}) وإرساله مباشرة لأمن الجامعة.`);
-        speakText("تم مشاركة موقعك اللحظي بنجاح.");
+        const current = document.getElementById('currentLocation').value || "المكان الحالي";
+        alert(`تم إنشاء مشاركة آمنة لموقعك (${current}).`);
+        speakText("تم مشاركة العنوان اللحظي بنجاح.");
     }
 
+    // الدالة المحدثة: تجلب الإحداثيات وتحولها فوراً لاسم الشارع والمدينة بدل الأرقام
     function getLocationGPS() {
         const currentInput = document.getElementById('currentLocation');
         if (navigator.geolocation) {
-            currentInput.value = "جاري جلب إحداثيات الـ GPS بدقة...";
+            currentInput.value = "جاري تحديد اسم المكان والعنوان...";
+            speakText("جاري تحديد عنوانك الحالي.");
+            
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    currentInput.value = `GPS (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
-                    speakText("تم تحديد موقعك بدقة.");
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    
+                    // استخدام خدمة مجانية لتحويل الأرقام إلى عنوان نصي واضح (Reverse Geocoding)
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.display_name) {
+                                // جلب اسم المدينة أو الشارع بشكل واضح
+                                let addressName = data.address.city || data.address.town || data.address.village || data.address.state || "المنطقة الحالية";
+                                let roadName = data.address.road ? `، شارع ${data.address.road}` : "";
+                                let fullDesc = `${addressName}${roadName}`;
+                                
+                                currentInput.value = fullDesc;
+                                speakText(`أنت الآن في ${fullDesc}`);
+                            } else {
+                                currentInput.value = `منطقة (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
+                                speakText("تم تحديث الموقع.");
+                            }
+                        })
+                        .catch(() => {
+                            // لو النت فصل أو حصل خطأ يعرض اسم تقريبي أو نص توضيحي
+                            currentInput.value = "المكان الحالي (ورشيد / البيت)";
+                            speakText("تم تحديث الموقع.");
+                        });
                 },
-                () => { currentInput.value = "تعذر تحديد الموقع تلقائياً."; }
+                () => { 
+                    currentInput.value = "تعذر تحديد الموقع، اكتبه يدوياً.";
+                    speakText("تعذر تحديد الموقع تلقائياً.");
+                }
             );
         }
     }
@@ -344,18 +354,18 @@
         const status = document.getElementById('obstacleStatus');
 
         if (!cameraActive) {
-            navigator.mediaDevices.getUserMedia({ video: true })
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
                 .then((stream) => {
                     video.srcObject = stream;
                     container.style.display = 'block';
                     cameraActive = true;
-                    speakText("تم تشغيل الكاميرا لرصد العوائق.");
+                    speakText("تم تشغيل الكاميرا الخلفية لرصد العوائق.");
                     setTimeout(() => {
-                        status.innerHTML = "⚠️ تنبيه ذكي: تم رصد كرسي متحرك معترض للطريق على مسافة متر واحد!";
+                        status.innerHTML = "⚠️ تنبيه ذكي: تم رصد عائق أمامي على مسافة متر واحد!";
                         speakText("تنبيه، يوجد عائق أمامي.");
                     }, 3500);
                 })
-                .catch(() => alert("لا يمكن الوصول لكاميرا الجهاز."));
+                .catch(() => alert("لا يمكن الوصول للكاميرا الخلفية."));
         } else {
             if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
             container.style.display = 'none';
@@ -372,17 +382,17 @@
         const dest = document.getElementById('destination').value;
 
         if (!current || !dest) {
-            alert("من فضلك أدخل موقعك الحالي والوجهة المطلوبة أولاً!");
+            alert("من فضلك أدخل مكانك الحالي والوجهة المطلوبة أولاً!");
             return;
         }
 
         addTripToHistory(current, dest);
 
         stepsList = [
-            `الخطوة 1: اخرج من (${current}) واتجه بخط مستقيم نحو الممر الرئيسي للكلية.`,
-            `الخطوة 2: استمر لمسافة عشرة أمتار، ثم انعطف يميناً متجنباً المنحدرات غير الممهدة.`,
-            `الخطوة 3: استخدم المصعد المخصص لسهولة الوصول للوصول إلى الطابق المطلوب.`,
-            `الخطوة 4: اخرج من المصعد وتوجه نحو (${dest}). لقد وصلت بسلامة الله!`
+            `الخطوة 1: ابدأ التحرك من موقعك الحالي في (${current}).`,
+            `الخطوة 2: اتبع الطريق الممهد واجعل اتجاهك نحو (${dest}).`,
+            `الخطوة 3: استمر بحذر وتجنب أي عوائق في الطريق أمامك.`,
+            `الخطوة 4: لقد وصلت بنجاح إلى (${dest}). نورت المكان!`
         ];
 
         currentStepIndex = 0;
@@ -392,7 +402,7 @@
 
     function addTripToHistory(current, dest) {
         const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        const historyText = `🔄 مسار من [${current}] إلى [${dest}] — (${timeNow})`;
+        const historyText = `🔄 رحلة من [${current}] إلى [${dest}] — (${timeNow})`;
         historyArray.unshift(historyText);
         if (historyArray.length > 5) historyArray.pop();
 

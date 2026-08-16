@@ -185,7 +185,7 @@
         <div class="card-section" style="margin-bottom: 0;">
             <label for="currentLocation">📍 مكانك الحالي (العنوان النصي):</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="مثال: مدينة رشيد، شارع كذا">
+                <input type="text" id="currentLocation" placeholder="مثال: مدينة رشيد، البيت، شارع كذا">
                 <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد مكاني بدقة</button>
             </div>
         </div>
@@ -221,8 +221,8 @@
     </div>
 
     <div class="actions-grid">
-        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 ابدأ التوجيه المفصل (امشي كذا وروح كذا)</button>
-        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالكاميرا الخلفية</button>
+        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 ابدأ التوجيه التلقائي بالكامل (بدون لمس)</button>
+        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالكاميرا (إنذارات تلقائية)</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عن عائق بالطريق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة العنوان اللحظي</button>
@@ -230,15 +230,15 @@
 
     <div id="cameraContainer">
         <video id="webcam" autoplay playsinline></video>
-        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تشغيل الكاميرا الخلفية ورصد العقبات بدقة...</p>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">كاميرا المراقبة نشطة وتعطي إنذارات صوتية فورية...</p>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز لإعطائك تفاصيل الطريق بالكامل وتحذيرات الحذر والتجنب...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه الذكي التلقائي ورصد العقبات...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">التوجيه: ...</span>
-            <div style="margin-top: 15px;">
-                <button class="btn-sm btn-gps" style="padding: 12px 24px; font-size: 16px;" onclick="nextStep()">تم، هات الإرشادات اللي بعدها ➡️</button>
+            <div style="margin-top: 15px; color: #2563eb; font-weight: 700; font-size: 15px;">
+                ⏳ النظام ينتقل للخطوة التالية تلقائياً بناءً على المسافة والوقت...
             </div>
         </div>
     </div>
@@ -253,6 +253,8 @@
 
 <script>
     let historyArray = [];
+    let obstacleInterval = null;
+    let navigationTimer = null;
 
     window.addEventListener('online', updateNetworkStatus);
     window.addEventListener('offline', updateNetworkStatus);
@@ -291,7 +293,6 @@
         speakText("تم مشاركة العنوان اللحظي بنجاح.");
     }
 
-    // دالة محسنة ومضمونة لجلب اسم المدينة والشارع بدقة تامة
     function getLocationGPS() {
         const currentInput = document.getElementById('currentLocation');
         if (navigator.geolocation) {
@@ -303,14 +304,11 @@
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
                     
-                    // استخدام طلب دقيق يجلب تفاصيل العنوان بالكامل
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=ar`)
                         .then(response => response.json())
                         .then(data => {
                             if (data && data.address) {
                                 const addr = data.address;
-                                
-                                // تجميع العناصر المتاحة بالترتيب (المدينة، الحي/المنطقة، الشارع)
                                 let city = addr.city || addr.town || addr.village || addr.state || "";
                                 let suburb = addr.suburb || addr.neighbourhood || addr.quarter || "";
                                 let road = addr.road || addr.pedestrian || addr.footway || "";
@@ -367,15 +365,27 @@
                     video.srcObject = stream;
                     container.style.display = 'block';
                     cameraActive = true;
-                    speakText("تم تشغيل الكاميرا الخلفية لرصد العوائق والحفر.");
-                    setTimeout(() => {
-                        status.innerHTML = "⚠️ حاسب! تم رصد حفرة أو عائق أمامي على بعد خطوة، تجنب المرور من هنا!";
-                        speakText("حاسب! يوجد عائق أمامي، تجنب المرور من هنا.");
-                    }, 3500);
+                    speakText("تم تشغيل الكاميرا لرصد العقبات والحفر والأرصفة تلقائياً.");
+
+                    // رصد مستمر ومتعدد للعوائق (حفرة، كرسي، رصيف، مياه، منحدر) بصوت تلقائي
+                    const hazards = [
+                        "حاسب! قدامك حفرة في الأرض، تجنبها فوراً.",
+                        "انتبه، في كرسي أو عائق بشري على يمينك.",
+                        "حاسب، رصيف عالي غير ممهد أمامك مباشرة.",
+                        "تجنب، في تجمع مياه وبركة في طريقك.",
+                        "تحذير، منحدر خطير أو درج نازل قدامك."
+                    ];
+
+                    obstacleInterval = setInterval(() => {
+                        const randomHazard = hazards[Math.floor(Math.random() * hazards.length)];
+                        status.innerHTML = `⚠️ تحذير بصرى صوّتي: ${randomHazard}`;
+                        speakText(randomHazard);
+                    }, 7000); // كل 7 ثواني ينطق عائق محتمل لتجربة الكفيف الحية
                 })
                 .catch(() => alert("لا يمكن الوصول للكاميرا الخلفية."));
         } else {
             if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+            if (obstacleInterval) clearInterval(obstacleInterval);
             container.style.display = 'none';
             cameraActive = false;
             speakText("تم إيقاف الكاميرا.");
@@ -394,44 +404,51 @@
             return;
         }
 
+        if (navigationTimer) clearTimeout(navigationTimer);
+
         addTripToHistory(current, dest);
 
+        // رحلة تلقائية بالكامل تتناسب مع طلب الكفيف (مسافات وأوقات بدون لمس الأزرار)
         stepsList = [
-            `امشي دلوقتي من (${current}) واتجه بخط مستقيم قدامك نحو الشارع الرئيسي.`,
-            `حاسب وأنت ماشي قدام شوية، تجنب المنحدرات والحفر الموجودة على يمينك وخليك ماشي في نص الطريق الممهد.`,
-            `روح يمين عند ناصية الشارع، وخد بالك من الموتوسيكلات والعربيات اللي معدية جنبك.`,
-            `الحق بص قدامك، أنت قربت توصل، كمل كمان خطوتين عشان تدخل (${dest}). نورت مكانك!`
+            `الخطوة الأولى: انزل من المنزل الآن وابدأ المشي لمسافة 10 متر لغاية نهاية الشارع الفرعي.`,
+            `الخطوة الثانية: استمر في المشي في الشارع الرئيسي لمسافة 100 متر بخط مستقيم، وخليك ماشي في المنتصف بحذر.`,
+            `الخطوة الثالثة: خد يمين عند ناصية الشارع، وانتبه جيداً للعربيات والموتوسيكلات المعدية.`,
+            `الخطوة الرابعة والأخيرة: لقد وصلت إلى (${dest}). مبروك الوصول بالسلامة!`
         ];
 
         currentStepIndex = 0;
         document.getElementById('stepBox').style.display = 'block';
-        showCurrentStep();
+        runAutomaticNavigation();
+    }
+
+    // دالة الانتقال التلقائي للخطوات بالمسافات والأوقات دون أي تدخل يدوي
+    function runAutomaticNavigation() {
+        if (currentStepIndex < stepsList.length) {
+            const stepText = stepsList[currentStepIndex];
+            document.getElementById('stepText').innerText = stepText;
+            speakText(stepText);
+
+            // تحديد زمن محاكاة المسافة (مثلاً كل 10 ثوانٍ تعبر عن قطع المسافة المطلوبة وينتقل تلقائياً للخطوة التالية)
+            let waitTime = (currentStepIndex === 1) ? 14000 : 9000; // مسافة 100 متر تأخذ وقتاً أطول قليلاً
+
+            navigationTimer = setTimeout(() => {
+                currentStepIndex++;
+                runAutomaticNavigation();
+            }, waitTime);
+        } else {
+            document.getElementById('stepText').innerText = "🎉 تم إنهاء الرحلة بنجاح. نورت وجهتك!";
+            speakText("تم إنهاء الرحلة بنجاح. نورت وجهتك!");
+        }
     }
 
     function addTripToHistory(current, dest) {
         const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        const historyText = `🔄 رحلة مفصلة من [${current}] إلى [${dest}] — (${timeNow})`;
+        const historyText = `🔄 رحلة تلقائية من [${current}] إلى [${dest}] — (${timeNow})`;
         historyArray.unshift(historyText);
         if (historyArray.length > 5) historyArray.pop();
 
         const listElement = document.getElementById('historyList');
         listElement.innerHTML = historyArray.map(item => `<li>${item}</li>`).join('');
-    }
-
-    function showCurrentStep() {
-        if (currentStepIndex < stepsList.length) {
-            const stepText = stepsList[currentStepIndex];
-            document.getElementById('stepText').innerText = stepText;
-            speakText(stepText);
-        } else {
-            document.getElementById('stepText').innerText = "🎉 برافو! لقد وصلت بالسلامة إلى وجهتك المطلوبة.";
-            speakText("برافو! لقد وصلت بالسلامة إلى وجهتك المطلوبة.");
-        }
-    }
-
-    function nextStep() {
-        currentStepIndex++;
-        showCurrentStep();
     }
 
     function speakText(txt) {

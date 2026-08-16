@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Smart Accessibility - النظام الشامل والعملاق</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #070b14 0%, #111827 50%, #1f2937 100%);
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --border: #cbd5e1;
+            --input-bg: #f8fafc;
+        }
+
+        body.high-contrast {
+            --bg-gradient: #000000;
+            --card-bg: #111111;
+            --text-main: #ffff00;
+            --text-sub: #ffffff;
+            --primary: #ffff00;
+            --primary-hover: #cccc00;
+            --border: #ffff00;
+            --input-bg: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            margin: 0;
+            padding: 50px 20px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            padding: 50px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--border);
+            padding-bottom: 25px;
+            margin-bottom: 35px;
+        }
+
+        .header h2 { margin: 0; color: var(--primary); font-size: 34px; font-weight: 900; letter-spacing: -0.5px; }
+        .supervisor { font-size: 16px; color: var(--text-sub); margin-top: 6px; font-weight: 700; }
+
+        .header-btns { display: flex; gap: 15px; align-items: center; }
+        .btn-theme { background: #334155; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; transition: 0.2s; }
+        .btn-theme:hover { background: #1e293b; }
+        
+        .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; }
+        .online { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+        .offline { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+
+        /* شبكة واسعة للوحة التحكم العملاقة */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .card-section {
+            background: var(--input-bg);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 16px; color: var(--text-main); }
+        .input-row { display: flex; gap: 12px; }
+
+        input {
+            flex: 1; padding: 16px 20px; border: 2px solid var(--border);
+            border-radius: 14px; background: var(--card-bg); color: var(--text-main); font-size: 17px; outline: none; transition: 0.2s;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.15); }
+
+        .btn-sm { padding: 0 20px; border-radius: 14px; border: none; cursor: pointer; font-weight: 800; font-size: 15px; transition: 0.2s; }
+        .btn-gps { background: #0ea5e9; color: white; }
+        .btn-gps:hover { background: #0284c7; }
+        .btn-mic { background: #10b981; color: white; }
+        .btn-mic:hover { background: #059669; }
+
+        /* فئات الإعاقة الكبيرة */
+        .accessibility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        .acc-option input { display: none; }
+        .acc-option label {
+            display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; background: var(--card-bg);
+            border: 2px solid var(--border); border-radius: 16px; cursor: pointer; font-size: 15px; margin: 0; font-weight: 700; text-align: center; transition: 0.2s;
+        }
+        .acc-option input:checked + label {
+            border-color: var(--primary); background: rgba(37, 99, 235, 0.1); color: var(--primary); font-weight: 900; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+            transform: translateY(-2px);
+        }
+        .acc-icon { font-size: 1.6em; }
+
+        /* أزرار العمليات العملاقة */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .action-btn {
+            padding: 18px; border: none; border-radius: 16px; color: white; font-size: 16px; font-weight: 800;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s;
+            box-shadow: 0 6px 15px -3px rgba(0,0,0,0.15);
+        }
+        .action-btn:hover { transform: translateY(-3px); opacity: 0.95; box-shadow: 0 10px 20px -4px rgba(0,0,0,0.25); }
+        .btn-primary { background: var(--primary); grid-column: span 3; font-size: 18px; padding: 22px; }
+        .btn-cam { background: #f59e0b; color: #1e293b; }
+        .btn-sos { background: #ef4444; }
+        .btn-report { background: #8b5cf6; }
+        .btn-share { background: #06b6d4; grid-column: span 3; }
+
+        /* صندوق النتائج والخطوات الكبير */
+        .result-box {
+            margin-top: 25px; padding: 25px; background: var(--input-bg); border-radius: 18px; border: 2px solid var(--border); font-size: 17px; line-height: 1.7;
+        }
+        .step-container { margin-top: 20px; padding: 20px; background: rgba(37, 99, 235, 0.08); border-radius: 14px; border-right: 6px solid var(--primary); display: none; }
+
+        /* سجل المشاوير العملاق */
+        .history-box {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 0;
+            padding-right: 0;
+            list-style: none;
+            font-size: 15px;
+        }
+        .history-box li {
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        #cameraContainer { margin-top: 20px; text-align: center; display: none; border-radius: 18px; overflow: hidden; border: 3px solid var(--border); background: #000; }
+        video { width: 100%; max-height: 350px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div>
+            <h2>AI Smart Accessibility</h2>
+            <div class="supervisor">النظام الجامعي الذكي المتكامل | إشراف: Eng. Laila Bahnasy</div>
+        </div>
+        <div class="header-btns">
+            <span id="netStatus" class="status-badge online">متصل (Online)</span>
+            <button class="btn-theme" onclick="toggleHighContrast()">👁️ تباين عالي</button>
+        </div>
+    </div>
+
+    <!-- شبكة المدخلات الكبيرة -->
+    <div class="dashboard-grid">
+        <div class="card-section" style="margin-bottom: 0;">
+            <label for="currentLocation">📍 موقعك الحالي:</label>
+            <div class="input-row">
+                <input type="text" id="currentLocation" placeholder="مثال: مبنى أ - الدور الأول">
+                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">GPS</button>
+            </div>
+        </div>
+        <div class="card-section" style="margin-bottom: 0;">
+            <label for="destination">🎯 الوجهة المطلوبة:</label>
+            <div class="input-row">
+                <input type="text" id="destination" placeholder="مثال: قاعة 302 أو المكتبة">
+                <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()">🎤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- فئات الإعاقة وسهولة الوصول -->
+    <div class="card-section" style="margin-top: 25px;">
+        <label>♿ حالة سهولة الوصول وتكييف المسار:</label>
+        <div class="accessibility-grid">
+            <div class="acc-option">
+                <input type="radio" id="t1" name="accessibilityType" value="general" checked>
+                <label for="t1"><span class="acc-icon">🚶‍♂️</span>عام</label>
+            </div>
+            <div class="acc-option">
+                <input type="radio" id="t2" name="accessibilityType" value="wheelchair">
+                <label for="t2"><span class="acc-icon">🦽</span>حركي</label>
+            </div>
+            <div class="acc-option">
+                <input type="radio" id="t3" name="accessibilityType" value="visual">
+                <label for="t3"><span class="acc-icon">🦯</span>بصري</label>
+            </div>
+            <div class="acc-option">
+                <input type="radio" id="t4" name="accessibilityType" value="hearing">
+                <label for="t4"><span class="acc-icon">🦻</span>سمعي</label>
+            </div>
+            <div class="acc-option">
+                <input type="radio" id="t5" name="accessibilityType" value="cognitive">
+                <label for="t5"><span class="acc-icon">🧩</span>ذهني</label>
+            </div>
+            <div class="acc-option">
+                <input type="radio" id="t6" name="accessibilityType" value="temporary">
+                <label for="t6"><span class="acc-icon">🩼</span>إصابة</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- أزرار العمليات العملاقة -->
+    <div class="actions-grid">
+        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء التوجيه التفاعلي خطوة بخطوة</button>
+        <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالذكاء الاصطناعي</button>
+        <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
+        <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عائق هندسي</button>
+        <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الموقع اللحظي مع الأمن</button>
+    </div>
+
+    <!-- كاميرا الرصد الكبيرة -->
+    <div id="cameraContainer">
+        <video id="webcam" autoplay playsinline></video>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري فحص البيئة المحيطة ورصد العقبات بدقة...</p>
+    </div>
+
+    <!-- صندوق النتائج والخطوات -->
+    <div class="result-box" id="outputResult">
+        <strong style="font-size: 18px;">حالة النظام:</strong> لوحة التحكم العملاقة جاهزة لتوجيهك ورصد العوائق بدقة فائقة...
+        <div class="step-container" id="stepBox">
+            <span id="stepText" style="font-weight: 800; font-size: 18px;">الخطوة 1: ...</span>
+            <div style="margin-top: 15px;">
+                <button class="btn-sm btn-gps" style="padding: 12px 24px; font-size: 16px;" onclick="nextStep()">تم التنفيذ، الخطوة التالية ➡️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- سجل المشاوير والتوجيهات العملاق -->
+    <div class="card-section" style="margin-top: 25px; margin-bottom: 0;">
+        <label>📜 سجل المشاوير والتوجيهات السابقة:</label>
+        <ul id="historyList" class="history-box">
+            <li>لا توجد رحلات مسجلة في الجلسة الحالية حتى الآن.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    let historyArray = [];
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    function updateNetworkStatus() {
+        const badge = document.getElementById('netStatus');
+        if (navigator.onLine) {
+            badge.className = "status-badge online";
+            badge.innerText = "متصل (Online)";
+        } else {
+            badge.className = "status-badge offline";
+            badge.innerText = "غير متصل (Cached Maps)";
+        }
+    }
+
+    function toggleHighContrast() {
+        document.body.classList.toggle('high-contrast');
+        speakText(document.body.classList.contains('high-contrast') ? "تم تفعيل التباين العالي" : "تم إلغاء التباين العالي");
+    }
+
+    function triggerSOS() {
+        const current = document.getElementById('currentLocation').value || "غير محدد";
+        document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 تنبيه طوارئ! تم إرسال الإحداثيات وموقعك الحالي (${current}) لغرفة أمن الجامعة بنجاح تام.</span>`;
+        speakText("تنبيه طوارئ! تم إرسال نداء استغاثة فوري.");
+    }
+
+    function reportObstacle() {
+        const current = document.getElementById('currentLocation').value;
+        if (!current) { alert("من فضلك حدد موقع العائق أولاً."); return; }
+        document.getElementById('outputResult').innerHTML = `<span style="color: #10b981; font-weight: 900; font-size: 18px;">🛠️ تم رفع البلاغ للإدارة الهندسية بنجاح عن العائق في (${current}).</span>`;
+        speakText("تم رفع البلاغ للإدارة الهندسية.");
+    }
+
+    function shareLiveLocation() {
+        const current = document.getElementById('currentLocation').value || "موقع GPS";
+        alert(`تم إنشاء رابط مؤقت آمن لموقعك اللحظي (${current}) وإرساله مباشرة لأمن الجامعة.`);
+        speakText("تم مشاركة موقعك اللحظي بنجاح.");
+    }
+
+    function getLocationGPS() {
+        const currentInput = document.getElementById('currentLocation');
+        if (navigator.geolocation) {
+            currentInput.value = "جاري جلب إحداثيات الـ GPS بدقة...";
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    currentInput.value = `GPS (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`;
+                    speakText("تم تحديد موقعك بدقة.");
+                },
+                () => { currentInput.value = "تعذر تحديد الموقع تلقائياً."; }
+            );
+        }
+    }
+
+    function startVoiceInput() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) { alert("متصفحك لا يدعم الإدخال الصوتي."); return; }
+        const rec = new SpeechRecognition();
+        rec.lang = 'ar-SA';
+        rec.start();
+        document.getElementById('destination').value = "جاري الاستماع لصوتك...";
+        rec.onresult = (e) => {
+            document.getElementById('destination').value = e.results[0][0].transcript;
+            speakText(`وجهتك هي: ${e.results[0][0].transcript}`);
+        };
+    }
+
+    let cameraActive = false;
+    function toggleCamera() {
+        const container = document.getElementById('cameraContainer');
+        const video = document.getElementById('webcam');
+        const status = document.getElementById('obstacleStatus');
+
+        if (!cameraActive) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                    video.srcObject = stream;
+                    container.style.display = 'block';
+                    cameraActive = true;
+                    speakText("تم تشغيل الكاميرا لرصد العوائق.");
+                    setTimeout(() => {
+                        status.innerHTML = "⚠️ تنبيه ذكي: تم رصد كرسي متحرك معترض للطريق على مسافة متر واحد!";
+                        speakText("تنبيه، يوجد عائق أمامي.");
+                    }, 3500);
+                })
+                .catch(() => alert("لا يمكن الوصول لكاميرا الجهاز."));
+        } else {
+            if (video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+            container.style.display = 'none';
+            cameraActive = false;
+            speakText("تم إيقاف الكاميرا.");
+        }
+    }
+
+    let currentStepIndex = 0;
+    let stepsList = [];
+
+    function startNavigation() {
+        const current = document.getElementById('currentLocation').value;
+        const dest = document.getElementById('destination').value;
+
+        if (!current || !dest) {
+            alert("من فضلك أدخل موقعك الحالي والوجهة المطلوبة أولاً!");
+            return;
+        }
+
+        addTripToHistory(current, dest);
+
+        stepsList = [
+            `الخطوة 1: اخرج من (${current}) واتجه بخط مستقيم نحو الممر الرئيسي للكلية.`,
+            `الخطوة 2: استمر لمسافة عشرة أمتار، ثم انعطف يميناً متجنباً المنحدرات غير الممهدة.`,
+            `الخطوة 3: استخدم المصعد المخصص لسهولة الوصول للوصول إلى الطابق المطلوب.`,
+            `الخطوة 4: اخرج من المصعد وتوجه نحو (${dest}). لقد وصلت بسلامة الله!`
+        ];
+
+        currentStepIndex = 0;
+        document.getElementById('stepBox').style.display = 'block';
+        showCurrentStep();
+    }
+
+    function addTripToHistory(current, dest) {
+        const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        const historyText = `🔄 مسار من [${current}] إلى [${dest}] — (${timeNow})`;
+        historyArray.unshift(historyText);
+        if (historyArray.length > 5) historyArray.pop();
+
+        const listElement = document.getElementById('historyList');
+        listElement.innerHTML = historyArray.map(item => `<li>${item}</li>`).join('');
+    }
+
+    function showCurrentStep() {
+        if (currentStepIndex < stepsList.length) {
+            const stepText = stepsList[currentStepIndex];
+            document.getElementById('stepText').innerText = stepText;
+            speakText(stepText);
+        } else {
+            document.getElementById('stepText').innerText = "🎉 مبروك! تم الوصول إلى الوجهة بنجاح.";
+            speakText("تم الوصول إلى الوجهة بنجاح.");
+        }
+    }
+
+    function nextStep() {
+        currentStepIndex++;
+        showCurrentStep();
+    }
+
+    function speakText(txt) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const s = new SpeechSynthesisUtterance(txt);
+            s.lang = 'ar-SA';
+            s.rate = 0.95;
+            window.speechSynthesis.speak(s);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Smart Accessibility — Enterprise Vision & LiDAR Radar System</title>
-    <!-- مكتبات الذكاء الاصطناعي الصناعي المتقدمة للرؤية وتتبع العوائق والحوائط -->
+    <!-- مكتبات الذكاء الاصطناعي الصناعي المتقدمة للرؤية وتتبع العوائق الحية بدقة تامة -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
     <style>
@@ -111,7 +111,7 @@
         .btn-mic { background: #059669; color: white; }
         .btn-mic:hover { background: #047857; }
 
-        /* منطقة الكاميرا الخارقة (الجوهرة للمشروع المؤسسي) */
+        /* منطقة الكاميرا الذكية الموجهة للاتجاهات */
         .enterprise-camera-box {
             background: #000000;
             border: 3px solid #3b82f6;
@@ -140,7 +140,6 @@
             object-fit: cover;
         }
 
-        /* واجهة الرادار والتحذير الرأسي فوق الكاميرا */
         .hud-overlay {
             position: absolute;
             top: 15px;
@@ -239,8 +238,8 @@
 <div class="app-container">
     <div class="header">
         <div>
-            <h2>Enterprise AI Vision & Obstacle Avoidance</h2>
-            <div class="supervisor">نظام الحماية والذكاء الاصطناعي المؤسسي لشركات الفئة الأولى</div>
+            <h2>Enterprise AI Vision & Directional Radar</h2>
+            <div class="supervisor">نظام التوجيه الذكي الموجه بالتوجيه التلقائي (يمين / يسار)</div>
         </div>
         <div class="header-btns">
             <span id="netStatus" class="status-badge online">Enterprise Online</span>
@@ -267,17 +266,17 @@
 
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي المتكامل للشركات</button>
-        <!-- جوهرة المشروع الخارقة للعوائق والحوائط -->
-        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل كاميرا الرؤية العميقة ورادار رصد العوائق والحوائط (Enterprise Grade)</button>
+        <!-- جوهرة الكاميرا مع التوجيه الذكي الحقيقي (يمين، يسار، استمرار) -->
+        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل كاميرا التوجيه الذكي ورصد الاتجاهات (يمين/يسار)</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ المؤسسة SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق في شبكة الشركات</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات اللحظية</button>
     </div>
 
-    <!-- نافذة الكاميرا الخارقة والرادار -->
+    <!-- نافذة الكاميرا والتوجيه -->
     <div id="enterpriseCameraContainer" class="enterprise-camera-box">
         <div class="hud-overlay">
-            <div class="radar-tag">📡 ماسح راداري نشط (LiDAR / AI Vision)</div>
+            <div class="radar-tag">📡 محرك التوجيه الذكي والتحليل الفوري</div>
             <div class="radar-tag" id="fpsCounter">FPS: 60</div>
         </div>
         
@@ -287,23 +286,23 @@
         </div>
 
         <div class="threat-alert-box">
-            <p id="enterpriseThreatStatus" class="threat-text">🛡️ جاري مسح محيط السير وكشف الحوائط والأجسام المانعة...</p>
-            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">حماية قصوى مفعلة</div>
+            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الكاميرا تقوم بتحليل المسار وتحديد مسارات الهروب (يمين/يسار)...</p>
+            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">توجيه نشط</div>
         </div>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام المؤسسي:</strong> جاهز للعمل والتدريب بكفاءة مطلقة مع أقوى أنظمة الرؤية الحاسوبية ورصد العوائق والحوائط...
+        <strong style="font-size: 18px;">حالة النظام:</strong> الكاميرا جاهزة لتوجيهك بخطوات دقيقة (اتحرك يمين، اتحرك يسار، الطريق آمن)...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار بدء المسار...</span>
             <div style="margin-top: 15px; color: #60a5fa; font-weight: 700; font-size: 15px;">
-                ⏳ النظام يمنحك وقتاً كاملاً ومدروساً للمشي البشري الطبيعي دون تسرع...
+                ⏳ النظام يمنحك وقتاً كافياً ومدروساً للمشي البشري الطبيعي دون تسرع...
             </div>
         </div>
     </div>
 
     <div class="card-section" style="margin-top: 25px; margin-bottom: 0;">
-        <label>📜 سجل عمليات التحذير والرحلات للشركات:</label>
+        <label>📜 سجل عمليات التحذير والاتجاهات:</label>
         <ul id="historyList" class="history-box">
             <li>لا توجد عمليات مسجلة في الجلسة الحالية حتى الآن.</li>
         </ul>
@@ -409,7 +408,7 @@
         };
     }
 
-    // جوهرة المشروع المؤسسي: كاميرا الرؤية الفائقة ورادار كشف الحوائط والأجسام المانعة بدقة تامة
+    // كاميرا التوجيه المتقدمة: تحدد مكان العائق في الكادر (يمين أو يسار) وتصدر أمراً دقيقاً بالحركة فوراً
     async function toggleEnterpriseCamera() {
         const container = document.getElementById('enterpriseCameraContainer');
         const video = document.getElementById('webcam');
@@ -419,34 +418,32 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            status.innerText = "جاري تهيئة محرك الرؤية العميقة ونماذج الذكاء الاصطناعي...";
-            speakText("جاري تشغيل كاميرا الرؤية العميقة ورادار الحوائط بمستوى الشركات الكبرى.");
+            status.innerText = "جاري تشغيل كاميرا التوجيه الذكي ومحرك التحليل...";
+            speakText("جاري تشغيل نظام الكاميرا الموجهة. سأخبرك إلى أين تتحرك فوراً.");
 
             try {
-                // تفعيل أعلى جودة كاميرا خلفية ممكنة للأجهزة الذكية
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
                         facingMode: "environment",
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
                     } 
                 });
                 video.srcObject = stream;
                 
                 if (!aiModel) {
-                    status.innerText = "جاري تحميل نماذج الكشف العميق (COCO-SSD Enterprise)...";
+                    status.innerText = "جاري تحميل نماذج الكشف والذكاء الاصطناعي...";
                     aiModel = await cocoSsd.load();
                 }
 
-                status.innerText = "النظام الراداري نشط — جاري مسح الحوائط والعوائق بدقة فائقة...";
-                speakText("نظام الرؤية ورادار الحوائط يعمل الآن بأقصى كفاءة مؤسسية. سأنذرك فوراً عند وجود أي عائق.");
+                status.innerText = "الكاميرا نشطة — تحلل الممرات وتعطي تعليمات الحركة بذكاء...";
+                speakText("الكاميرا تعمل الآن. سأعطيك إرشادات الحركة يميناً أو يساراً بدقة تامة.");
                 cameraActive = true;
 
-                // حلقة رصد وتحليل فائقة السرعة تعمل كل 500 ملي ثانية لضمان حماية مطلقة
+                // حلقة فحص سريعة تعمل كل 500 ملي ثانية لتحديث التوجيه في الوقت الفعلي
                 detectionInterval = setInterval(async () => {
                     if (!cameraActive) return;
 
-                    // مطابقة حجم الكانفاس مع الفيديو لضمان رسم مربعات الرادار في مكانها الصحيح تماماً
                     if (video.videoWidth > 0) {
                         canvas.width = video.videoWidth;
                         canvas.height = video.videoHeight;
@@ -454,40 +451,53 @@
 
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     const currentTime = Date.now();
-                    let threatDetected = false;
-                    let threatMsg = "تنبيه! أمامك عائق في المسار، انتبه جيداً.";
+                    let guidanceMsg = "الطريق أمامك آمن، استمر في السير.";
+                    let isBlocked = false;
 
                     try {
-                        // 1. تحليل الأجسام الذكي عبر نموذج الذكاء الاصطناعي
+                        // 1. تحليل الأجسام المادية وعزل مكانها في الكادر (منتصف، يمين، يسار)
                         if (aiModel) {
                             const predictions = await aiModel.detect(video);
                             if (predictions && predictions.length > 0) {
-                                for (let p of predictions) {
-                                    if (p.score > 0.40) {
-                                        threatDetected = true;
-                                        threatMsg = `تحذير! تم رصد (${p.class === 'person' ? 'شخص' : 'جسم صلب'}) في طريقك مباشرة.`;
-                                        
-                                        // رسم شبكة رادار ومربع أحمر احترافي حول العائق المكتشف (مستوى شركات عالمية)
-                                        const [x, y, width, height] = p.bbox;
-                                        ctx.strokeStyle = "#ef4444";
-                                        ctx.lineWidth = 6;
-                                        ctx.strokeRect(x, y, width, height);
-                                        
-                                        ctx.fillStyle = "rgba(239, 68, 68, 0.8)";
-                                        ctx.fillRect(x, y > 35 ? y - 35 : 0, width, 35);
-                                        
-                                        ctx.fillStyle = "#ffffff";
-                                        ctx.font = "bold 18px Segoe UI";
-                                        ctx.fillText(`عائق خطر (${Math.round(p.score * 100)}%)`, x + 8, y > 35 ? y - 10 : 25);
+                                // فلترة الأجسام الخطرة والواضحة أمام الكاميرا مباشرة
+                                const closeObject = predictions.find(p => p.score > 0.45);
+                                if (closeObject) {
+                                    isBlocked = true;
+                                    const [x, y, width, height] = closeObject.bbox;
+                                    const frameWidth = video.videoWidth || 1280;
+                                    const objectCenterX = x + (width / 2);
+
+                                    // تحديد موقع العائق في الكاميرا وإعطاء أمر الاتجاه المعاكس
+                                    if (objectCenterX < frameWidth * 0.4) {
+                                        // العائق على اليسار -> اطلب التحرك يميناً
+                                        guidanceMsg = "الطريق مقفول على اليسار، اتحرك يميناً.";
+                                    } else if (objectCenterX > frameWidth * 0.6) {
+                                        // العائق على اليمين -> اطلب التحرك يساراً
+                                        guidanceMsg = "الطريق مقفول على اليمين، اتحرك يساراً.";
+                                    } else {
+                                        // العائق في المنتصف تماماً -> اختر اتجاه الفراغ الأوسع أو اطلب التحرك لأي جانب
+                                        guidanceMsg = "الممر أمامي مسدود، اتحرك يميناً لتفادي العائق.";
                                     }
+
+                                    // رسم مربع التحديد المرئي على الشاشة للمستخدم
+                                    ctx.strokeStyle = "#ef4444";
+                                    ctx.lineWidth = 5;
+                                    ctx.strokeRect(x, y, width, height);
+                                    
+                                    ctx.fillStyle = "rgba(239, 68, 68, 0.85)";
+                                    ctx.fillRect(x, y > 35 ? y - 35 : 0, width, 35);
+                                    
+                                    ctx.fillStyle = "#ffffff";
+                                    ctx.font = "bold 16px Segoe UI";
+                                    ctx.fillText(`عائق - ${guidanceMsg}`, x + 8, y > 35 ? y - 10 : 25);
                                 }
                             }
                         }
                     } catch (e) {}
 
-                    // 2. الفحص المزدوج والذقي لبكسلات العدسة (لكشف الحوائط المغلقة والملاصقة تماماً أو الظلام المفاجئ)
+                    // 2. الفحص الذكي للإضاءة والانسداد التام للعدسة (حوائط ملاصقة أو ظلمة تامة)
                     try {
-                        if (video.videoWidth > 0) {
+                        if (video.videoWidth > 0 && !isBlocked) {
                             const sampleCanvas = document.createElement('canvas');
                             const sampleCtx = sampleCanvas.getContext('2d');
                             sampleCanvas.width = 64;
@@ -501,29 +511,29 @@
                             }
                             let avgBrightness = totalBrightness / (frameData.length / 4);
 
-                            // إذا ظهر حائط ملاصق يغطي العدسة بالكامل أو انعدمت الإضاءة
+                            // إذا كانت العدسة مغطاة بحائط ملاصق أو مظلمة تماماً
                             if (avgBrightness < 12 || avgBrightness > 250) {
-                                threatDetected = true;
-                                threatMsg = "تنبيه طوارئ قصوى! حائط مسدود أو عائق ملاصق لك تماماً، توقف فوراً.";
+                                isBlocked = true;
+                                guidanceMsg = "الطريق مسدود تماماً أمامك، اتحرك يميناً أو تراجع للخلف.";
                             }
                         }
                     } catch (e) {}
 
-                    // إطلاق الإنذار الصوتي الفوري والمتكرر بذكاء (كل ثانيتين لضمان عدم التاخير والوقاية التامة)
-                    if (threatDetected) {
-                        status.innerHTML = `🚨 <span style="color: #f87171;">${threatMsg}</span>`;
-                        if (currentTime - lastSpokenTime > 2000) {
-                            speakText(threatMsg);
+                    // إصدار التوجيه الصوتي الفوري للمستخدم
+                    if (isBlocked) {
+                        status.innerHTML = `🚨 <span style="color: #f87171; font-weight: 900;">${guidanceMsg}</span>`;
+                        if (currentTime - lastSpokenTime > 2200) {
+                            speakText(guidanceMsg);
                             lastSpokenTime = currentTime;
                         }
                     } else {
-                        status.innerHTML = `🛡️ <span style="color: #34d399;">المسار آمن، رادار الكاميرا يمسح بانتظام...</span>`;
+                        status.innerHTML = `✅ <span style="color: #34d399;">الطريق آمن، استمر في السير بشكل طبيعي.</span>`;
                     }
 
                 }, 500);
 
             } catch (err) {
-                alert("تعذر الوصول لكاميرا المؤسسة. تأكد من تفعيل صلاحيات المتصفح.");
+                alert("تعذر تشغيل الكاميرا. تأكد من إعطاء الصلاحية للمتصفح.");
                 container.style.display = 'none';
                 cameraActive = false;
             }
@@ -532,7 +542,7 @@
             if (detectionInterval) clearInterval(detectionInterval);
             container.style.display = 'none';
             cameraActive = false;
-            speakText("تم إيقاف كاميرا الرؤية العميقة ورادار الحوائط.");
+            speakText("تم إيقاف كاميرا التوجيه الذكي.");
         }
     }
 
@@ -545,7 +555,6 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    // بدء الملاحة التلقائية مع توقيت ومسافات صحيحة ومنطقية تمنع التسرع وتضمن الراحة
     function startNavigation() {
         const current = document.getElementById('currentLocation').value;
         const dest = document.getElementById('destination').value;
@@ -565,7 +574,7 @@
         addTripToHistory(current, dest);
         currentStep = 0;
         
-        speakText("تم بدء الملاحة المؤسסية. امشِ بهدوء وبخطوات طبيعية، وسأبلغك بكل خطوة في وقفتها المناسبة.");
+        speakText("تم بدء الملاحة. امشِ بهدوء وبخطوات طبيعية، وسأبلغك بكل خطوة في وقفتها المناسبة.");
         document.getElementById('stepBox').style.display = 'block';
 
         navigator.geolocation.getCurrentPosition(pos => {
@@ -574,7 +583,6 @@
         }, null, { enableHighAccuracy: true });
     }
 
-    // خطوات بمساحات واقعية ومنطقية تضمن عدم التسرع وتعطي الوقت الكافي للمشي
     function runFullyAutomaticNav(dest) {
         const steps = [
             { dist: 25, msg: "ابدأ المشي الآن لمسافة 25 متراً في الممر الرئيسي." },
@@ -585,7 +593,7 @@
         if (currentStep >= steps.length) return;
 
         watchId = navigator.geolocation.watchPosition(pos => {
-            if (pos.coords.accuracy > 30) return; // فلترة الإحداثيات غير الدقيقة لضمان صحة المسار
+            if (pos.coords.accuracy > 30) return;
 
             if (!startCoords) return;
             const distanceCovered = getDist(startCoords.lat, startCoords.lon, pos.coords.latitude, pos.coords.longitude);

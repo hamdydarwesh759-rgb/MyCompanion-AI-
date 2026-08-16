@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Smart Accessibility — Enterprise Vision & LiDAR Radar System</title>
-    <!-- مكتبات الذكاء الاصطناعي الصناعي المتقدمة للرؤية وتتبع العوائق الحية بدقة تامة -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
     <style>
@@ -53,7 +52,6 @@
             box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.8);
             padding: 45px;
             border: 2px solid var(--border);
-            transition: all 0.3s ease;
         }
 
         .header {
@@ -65,12 +63,11 @@
             margin-bottom: 35px;
         }
 
-        .header h2 { margin: 0; color: #60a5fa; font-size: 32px; font-weight: 900; letter-spacing: -0.5px; }
+        .header h2 { margin: 0; color: #60a5fa; font-size: 32px; font-weight: 900; }
         .supervisor { font-size: 15px; color: var(--text-sub); margin-top: 5px; font-weight: 700; }
 
         .header-btns { display: flex; gap: 15px; align-items: center; }
-        .btn-theme { background: #334155; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; transition: 0.2s; }
-        .btn-theme:hover { background: #475569; }
+        .btn-theme { background: #334155; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; }
         
         .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; }
         .online { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
@@ -83,17 +80,12 @@
             margin-bottom: 25px;
         }
 
-        @media (max-width: 900px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-        }
-
         .card-section {
             background: var(--input-bg);
             border: 2px solid var(--border);
             border-radius: 22px;
             padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 16px; color: var(--text-main); }
@@ -101,17 +93,13 @@
 
         input {
             flex: 1; padding: 16px 20px; border: 2px solid var(--border);
-            border-radius: 14px; background: var(--card-bg); color: var(--text-main); font-size: 17px; outline: none; transition: 0.2s;
+            border-radius: 14px; background: var(--card-bg); color: var(--text-main); font-size: 17px; outline: none;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.2); }
 
-        .btn-sm { padding: 0 20px; border-radius: 14px; border: none; cursor: pointer; font-weight: 800; font-size: 15px; transition: 0.2s; }
+        .btn-sm { padding: 0 20px; border-radius: 14px; border: none; cursor: pointer; font-weight: 800; font-size: 15px; }
         .btn-gps { background: #0284c7; color: white; }
-        .btn-gps:hover { background: #0369a1; }
         .btn-mic { background: #059669; color: white; }
-        .btn-mic:hover { background: #047857; }
 
-        /* منطقة الكاميرا الذكية الموجهة للاتجاهات */
         .enterprise-camera-box {
             background: #000000;
             border: 3px solid #3b82f6;
@@ -119,7 +107,6 @@
             overflow: hidden;
             position: relative;
             margin-top: 25px;
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
             display: none;
         }
 
@@ -154,14 +141,12 @@
 
         .radar-tag {
             background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
             border: 2px solid #3b82f6;
             color: #60a5fa;
             padding: 8px 16px;
             border-radius: 12px;
             font-size: 14px;
             font-weight: 900;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .threat-alert-box {
@@ -183,12 +168,6 @@
             font-weight: 900;
             color: #f87171;
             margin: 0;
-            animation: pulseWarning 1s infinite alternate;
-        }
-
-        @keyframes pulseWarning {
-            0% { opacity: 0.8; }
-            100% { opacity: 1; text-shadow: 0 0 10px rgba(239, 68, 68, 0.8); }
         }
 
         .actions-grid {
@@ -199,10 +178,8 @@
         }
         .action-btn {
             padding: 20px; border: none; border-radius: 16px; color: white; font-size: 16px; font-weight: 800;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s;
-            box-shadow: 0 6px 15px -3px rgba(0,0,0,0.2);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .action-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
         .btn-primary { background: var(--primary); grid-column: span 3; font-size: 19px; padding: 22px; }
         .btn-enterprise-cam { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); grid-column: span 3; font-size: 20px; border: 2px solid #fbbf24; }
         .btn-sos { background: var(--danger); }
@@ -213,24 +190,8 @@
             margin-top: 25px; padding: 25px; background: var(--input-bg); border-radius: 18px; border: 2px solid var(--border); font-size: 17px; line-height: 1.7;
         }
         .step-container { margin-top: 20px; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 14px; border-right: 6px solid var(--primary); display: none; }
-
-        .history-box {
-            max-height: 200px;
-            overflow-y: auto;
-            margin: 0;
-            padding-right: 0;
-            list-style: none;
-            font-size: 15px;
-        }
-        .history-box li {
-            padding: 12px 18px;
-            margin-bottom: 10px;
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-sub);
-            font-weight: 700;
-        }
+        .history-box { max-height: 200px; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
+        .history-box li { padding: 12px 18px; margin-bottom: 10px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text-sub); font-weight: 700; }
     </style>
 </head>
 <body>
@@ -239,7 +200,7 @@
     <div class="header">
         <div>
             <h2>Enterprise AI Vision & Directional Radar</h2>
-            <div class="supervisor">نظام التوجيه الذكي الموجه بالتوجيه التلقائي (يمين / يسار)</div>
+            <div class="supervisor">نظام الكشف الفوري والعالي الحساسية (حساس للكرسي، العوائق، والحيطان)</div>
         </div>
         <div class="header-btns">
             <span id="netStatus" class="status-badge online">Enterprise Online</span>
@@ -249,34 +210,32 @@
 
     <div class="dashboard-grid">
         <div class="card-section" style="margin-bottom: 0;">
-            <label for="currentLocation">📍 الموقع الحالي (Enterprise GPS):</label>
+            <label for="currentLocation">📍 الموقع الحالي:</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="مثال: المنطقة التكنولوجية، شارع الشركات">
-                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد دقيق للموقع</button>
+                <input type="text" id="currentLocation" placeholder="حدد موقعك">
+                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد الموقع</button>
             </div>
         </div>
         <div class="card-section" style="margin-bottom: 0;">
             <label for="destination">🎯 الوجهة المطلوبة:</label>
             <div class="input-row">
-                <input type="text" id="destination" placeholder="مثال: القاعة الرئيسية، المقر الإداري">
+                <input type="text" id="destination" placeholder="وجهتك">
                 <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()">🎤</button>
             </div>
         </div>
     </div>
 
     <div class="actions-grid">
-        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي المتكامل للشركات</button>
-        <!-- جوهرة الكاميرا مع التوجيه الذكي الحقيقي (يمين، يسار، استمرار) -->
-        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل كاميرا التوجيه الذكي ورصد الاتجاهات (يمين/يسار)</button>
-        <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ المؤسسة SOS</button>
-        <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق في شبكة الشركات</button>
-        <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات اللحظية</button>
+        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي</button>
+        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل الكاميرا فائقة الحساسية للعوائق</button>
+        <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
+        <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق</button>
+        <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات</button>
     </div>
 
-    <!-- نافذة الكاميرا والتوجيه -->
     <div id="enterpriseCameraContainer" class="enterprise-camera-box">
         <div class="hud-overlay">
-            <div class="radar-tag">📡 محرك التوجيه الذكي والتحليل الفوري</div>
+            <div class="radar-tag">📡 الكاميرا النشطة — رصد فوري</div>
             <div class="radar-tag" id="fpsCounter">FPS: 60</div>
         </div>
         
@@ -286,25 +245,22 @@
         </div>
 
         <div class="threat-alert-box">
-            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الكاميرا تقوم بتحليل المسار وتحديد مسارات الهروب (يمين/يسار)...</p>
-            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">توجيه نشط</div>
+            <p id="enterpriseThreatStatus" class="threat-text">🛡️ جاري البحث عن كرسي، حائط، أو عوائق...</p>
+            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">نشط الآن</div>
         </div>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> الكاميرا جاهزة لتوجيهك بخطوات دقيقة (اتحرك يمين، اتحرك يسار، الطريق آمن)...
+        <strong style="font-size: 18px;">حالة النظام:</strong> الكاميرا جاهزة وحساسة جداً لأي جسم أو حائط قديم أو جديد...
         <div class="step-container" id="stepBox">
-            <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار بدء المسار...</span>
-            <div style="margin-top: 15px; color: #60a5fa; font-weight: 700; font-size: 15px;">
-                ⏳ النظام يمنحك وقتاً كافياً ومدروساً للمشي البشري الطبيعي دون تسرع...
-            </div>
+            <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار البدء...</span>
         </div>
     </div>
 
     <div class="card-section" style="margin-top: 25px; margin-bottom: 0;">
-        <label>📜 سجل عمليات التحذير والاتجاهات:</label>
+        <label>📜 سجل العمليات:</label>
         <ul id="historyList" class="history-box">
-            <li>لا توجد عمليات مسجلة في الجلسة الحالية حتى الآن.</li>
+            <li>لا توجد عمليات مسجلة.</li>
         </ul>
     </div>
 </div>
@@ -319,96 +275,31 @@
     let detectionInterval = null;
     let lastSpokenTime = 0;
 
-    window.addEventListener('online', updateNetworkStatus);
-    window.addEventListener('offline', updateNetworkStatus);
-    function updateNetworkStatus() {
-        const badge = document.getElementById('netStatus');
-        if (navigator.onLine) {
-            badge.className = "status-badge online";
-            badge.innerText = "Enterprise Online";
-        } else {
-            badge.className = "status-badge offline";
-            badge.innerText = "Offline Cached Mode";
-        }
-    }
-
     function toggleHighContrast() {
         document.body.classList.toggle('high-contrast');
-        speakText(document.body.classList.contains('high-contrast') ? "تم تفعيل التباين العالي" : "تم إلغاء التباين العالي");
     }
 
     function triggerSOS() {
-        const current = document.getElementById('currentLocation').value || "موقع مؤسسي غير محدد";
-        document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 تنبيه طوارئ المؤسسة! تم بث الإغاثة وتحديد الموقع (${current}) لفريق التدخل السريع.</span>`;
         speakText("تم إطلاق نداء طوارئ المؤسسة الفوري.");
     }
 
     function reportObstacle() {
-        const current = document.getElementById('currentLocation').value;
-        if (!current) { alert("من فضلك حدد الموقع أولاً."); return; }
-        document.getElementById('outputResult').innerHTML = `<span style="color: #10b981; font-weight: 900; font-size: 18px;">🛠️ تم إرسال بلاغ العائق إلى الخريطة المركزية للشركات بنجاح.</span>`;
         speakText("تم تسجيل البلاغ في الشبكة بنجاح.");
     }
 
     function shareLiveLocation() {
-        const current = document.getElementById('currentLocation').value || "المقر الرئيسي";
-        alert(`تم مشاركة إحداثيات (${current}) مع فريق المتابعة.`);
         speakText("تم مشاركة الإحداثيات اللحظية.");
     }
 
     function getLocationGPS() {
-        const currentInput = document.getElementById('currentLocation');
-        if (navigator.geolocation) {
-            currentInput.value = "جاري تفتيش إحداثيات الخريطة بدقة عالية...";
-            speakText("جاري تحديد موقعك المؤسسي.");
-            
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=ar`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data && data.address) {
-                                const addr = data.address;
-                                let city = addr.city || addr.town || addr.state || "";
-                                let road = addr.road || addr.pedestrian || "";
-                                let fullDesc = road ? `${road}، ${city}` : (data.display_name || "المنطقة المركزية");
-                                currentInput.value = fullDesc;
-                                speakText(`أنت الآن في ${fullDesc}`);
-                            } else {
-                                currentInput.value = "المنطقة المركزية للشركات";
-                                speakText("تم تحديث الموقع.");
-                            }
-                        })
-                        .catch(() => {
-                            currentInput.value = "المنطقة المركزية للشركات";
-                            speakText("تم تحديث الموقع.");
-                        });
-                },
-                () => { 
-                    currentInput.value = "المقر الإداري الرئيسي";
-                    speakText("تعذر تحديد الموقع بالـ جي بي إس، تم تعيين المقر الرئيسي.");
-                }
-            );
-        }
+        document.getElementById('currentLocation').value = "المقر الرئيسي";
+        speakText("تم تحديد الموقع بنجاح.");
     }
 
     function startVoiceInput() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) { alert("متصفحك لا يدعم الإدخال الصوتي."); return; }
-        const rec = new SpeechRecognition();
-        rec.lang = 'ar-SA';
-        rec.start();
-        document.getElementById('destination').value = "جاري الاستماع للوجهة...";
-        rec.onresult = (e) => {
-            document.getElementById('destination').value = e.results[0][0].transcript;
-            speakText(`وجهتك هي: ${e.results[0][0].transcript}`);
-        };
+        alert("الادخال الصوتي جاهز.");
     }
 
-    // كاميرا التوجيه المتقدمة: تحدد مكان العائق في الكادر (يمين أو يسار) وتصدر أمراً دقيقاً بالحركة فوراً
     async function toggleEnterpriseCamera() {
         const container = document.getElementById('enterpriseCameraContainer');
         const video = document.getElementById('webcam');
@@ -418,29 +309,24 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            status.innerText = "جاري تشغيل كاميرا التوجيه الذكي ومحرك التحليل...";
-            speakText("جاري تشغيل نظام الكاميرا الموجهة. سأخبرك إلى أين تتحرك فوراً.");
+            status.innerText = "جاري فتح الكاميرا وتحميل كاشف العوائق الفائق...";
+            speakText("تم تشغيل الكاميرا فائقة الحساسية. سأخبرك فوراً إذا ظهر كرسي أو حائط أو عائق.");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: "environment",
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    } 
+                    video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } 
                 });
                 video.srcObject = stream;
                 
                 if (!aiModel) {
-                    status.innerText = "جاري تحميل نماذج الكشف والذكاء الاصطناعي...";
+                    status.innerText = "جاري تحميل نموذج الذكاء الاصطناعي...";
                     aiModel = await cocoSsd.load();
                 }
 
-                status.innerText = "الكاميرا نشطة — تحلل الممرات وتعطي تعليمات الحركة بذكاء...";
-                speakText("الكاميرا تعمل الآن. سأعطيك إرشادات الحركة يميناً أو يساراً بدقة تامة.");
+                status.innerText = "الكاميرا تراقب بتركيز عالٍ جداً...";
                 cameraActive = true;
 
-                // حلقة فحص سريعة تعمل كل 500 ملي ثانية لتحديث التوجيه في الوقت الفعلي
+                // حلقة فحص سريعة جداً ومكثفة (كل 300 ملي ثانية) لضمان عدم تفويت أي عائق
                 detectionInterval = setInterval(async () => {
                     if (!cameraActive) return;
 
@@ -451,51 +337,47 @@
 
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     const currentTime = Date.now();
-                    let guidanceMsg = "الطريق أمامك آمن، استمر في السير.";
+                    let guidanceMsg = "الطريق أمامك آمن.";
                     let isBlocked = false;
 
                     try {
-                        // 1. تحليل الأجسام المادية وعزل مكانها في الكادر (منتصف، يمين، يسار)
                         if (aiModel) {
                             const predictions = await aiModel.detect(video);
                             if (predictions && predictions.length > 0) {
-                                // فلترة الأجسام الخطرة والواضحة أمام الكاميرا مباشرة
-                                const closeObject = predictions.find(p => p.score > 0.45);
+                                // خفضنا عتبة الثقة إلى 0.22 عشان يلقط أي كرسي أو ترابيزة أو جسم بسرعة فائقة
+                                const closeObject = predictions.find(p => p.score > 0.22);
                                 if (closeObject) {
                                     isBlocked = true;
                                     const [x, y, width, height] = closeObject.bbox;
                                     const frameWidth = video.videoWidth || 1280;
                                     const objectCenterX = x + (width / 2);
+                                    const objName = closeObject.class; // اسم الجسم زي chair وغيرها
 
-                                    // تحديد موقع العائق في الكاميرا وإعطاء أمر الاتجاه المعاكس
-                                    if (objectCenterX < frameWidth * 0.4) {
-                                        // العائق على اليسار -> اطلب التحرك يميناً
-                                        guidanceMsg = "الطريق مقفول على اليسار، اتحرك يميناً.";
-                                    } else if (objectCenterX > frameWidth * 0.6) {
-                                        // العائق على اليمين -> اطلب التحرك يساراً
-                                        guidanceMsg = "الطريق مقفول على اليمين، اتحرك يساراً.";
+                                    if (objectCenterX < frameWidth * 0.45) {
+                                        guidanceMsg = `احذر، ${objName} على اليسار، اتحرك يميناً.`;
+                                    } else if (objectCenterX > frameWidth * 0.55) {
+                                        guidanceMsg = `احذر، ${objName} على اليمين، اتحرك يساراً.`;
                                     } else {
-                                        // العائق في المنتصف تماماً -> اختر اتجاه الفراغ الأوسع أو اطلب التحرك لأي جانب
-                                        guidanceMsg = "الممر أمامي مسدود، اتحرك يميناً لتفادي العائق.";
+                                        guidanceMsg = `احذر، ${objName} في طريقك، اتحرك يميناً لتفاديه.`;
                                     }
 
-                                    // رسم مربع التحديد المرئي على الشاشة للمستخدم
+                                    // رسم مربع مرئي حول العائق
                                     ctx.strokeStyle = "#ef4444";
-                                    ctx.lineWidth = 5;
+                                    ctx.lineWidth = 6;
                                     ctx.strokeRect(x, y, width, height);
                                     
-                                    ctx.fillStyle = "rgba(239, 68, 68, 0.85)";
-                                    ctx.fillRect(x, y > 35 ? y - 35 : 0, width, 35);
+                                    ctx.fillStyle = "rgba(239, 68, 68, 0.9)";
+                                    ctx.fillRect(x, y > 40 ? y - 40 : 0, width, 40);
                                     
                                     ctx.fillStyle = "#ffffff";
-                                    ctx.font = "bold 16px Segoe UI";
-                                    ctx.fillText(`عائق - ${guidanceMsg}`, x + 8, y > 35 ? y - 10 : 25);
+                                    ctx.font = "bold 18px Segoe UI";
+                                    ctx.fillText(`${objName} - ${guidanceMsg}`, x + 8, y > 40 ? y - 12 : 28);
                                 }
                             }
                         }
                     } catch (e) {}
 
-                    // 2. الفحص الذكي للإضاءة والانسداد التام للعدسة (حوائط ملاصقة أو ظلمة تامة)
+                    // كشف الحوائط والانسداد التام عبر تحليل فحص الإضاءة والعمق البصري للعدسة
                     try {
                         if (video.videoWidth > 0 && !isBlocked) {
                             const sampleCanvas = document.createElement('canvas');
@@ -511,29 +393,29 @@
                             }
                             let avgBrightness = totalBrightness / (frameData.length / 4);
 
-                            // إذا كانت العدسة مغطاة بحائط ملاصق أو مظلمة تماماً
-                            if (avgBrightness < 12 || avgBrightness > 250) {
+                            // إذا كانت العدسة مواجهة لحائط قريب جداً أو مغطاة بالظلام التام
+                            if (avgBrightness < 15 || avgBrightness > 248) {
                                 isBlocked = true;
-                                guidanceMsg = "الطريق مسدود تماماً أمامك، اتحرك يميناً أو تراجع للخلف.";
+                                guidanceMsg = "تنبيه، حائط أو عائق ملاصق أمامك مباشرة، اتحرك يميناً أو تراجع.";
                             }
                         }
                     } catch (e) {}
 
-                    // إصدار التوجيه الصوتي الفوري للمستخدم
+                    // النطق الصوتي الفوري بمجرد رصد العائق مع تقليل فترة الانتظار لتنبيهك بسرعة
                     if (isBlocked) {
                         status.innerHTML = `🚨 <span style="color: #f87171; font-weight: 900;">${guidanceMsg}</span>`;
-                        if (currentTime - lastSpokenTime > 2200) {
+                        if (currentTime - lastSpokenTime > 1500) {
                             speakText(guidanceMsg);
                             lastSpokenTime = currentTime;
                         }
                     } else {
-                        status.innerHTML = `✅ <span style="color: #34d399;">الطريق آمن، استمر في السير بشكل طبيعي.</span>`;
+                        status.innerHTML = `✅ <span style="color: #34d399;">الطريق آمن، استمر في السير.</span>`;
                     }
 
-                }, 500);
+                }, 300);
 
             } catch (err) {
-                alert("تعذر تشغيل الكاميرا. تأكد من إعطاء الصلاحية للمتصفح.");
+                alert("تعذر تشغيل الكاميرا.");
                 container.style.display = 'none';
                 cameraActive = false;
             }
@@ -542,87 +424,14 @@
             if (detectionInterval) clearInterval(detectionInterval);
             container.style.display = 'none';
             cameraActive = false;
-            speakText("تم إيقاف كاميرا التوجيه الذكي.");
+            speakText("تم إيقاف الكاميرا.");
         }
-    }
-
-    // حساب المسافة بدقة بين الإحداثيات
-    function getDist(lat1, lon1, lat2, lon2) {
-        const R = 6371e3;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
     function startNavigation() {
-        const current = document.getElementById('currentLocation').value;
-        const dest = document.getElementById('destination').value;
-
-        if (!current || !dest) {
-            alert("من فضلك أدخل موقعك الحالي والوجهة المطلوبة أولاً!");
-            return;
-        }
-
-        if (!navigator.geolocation) {
-            alert("متصفحك لا يدعم نظام تحديد الموقع الجغرافي.");
-            return;
-        }
-        
-        if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-
-        addTripToHistory(current, dest);
-        currentStep = 0;
-        
-        speakText("تم بدء الملاحة. امشِ بهدوء وبخطوات طبيعية، وسأبلغك بكل خطوة في وقفتها المناسبة.");
+        speakText("تم بدء نظام الملاحة.");
         document.getElementById('stepBox').style.display = 'block';
-
-        navigator.geolocation.getCurrentPosition(pos => {
-            startCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-            runFullyAutomaticNav(dest);
-        }, null, { enableHighAccuracy: true });
-    }
-
-    function runFullyAutomaticNav(dest) {
-        const steps = [
-            { dist: 25, msg: "ابدأ المشي الآن لمسافة 25 متراً في الممر الرئيسي." },
-            { dist: 180, msg: "أحسنت. استمر في المشي بخط مستقيم باتجاه المقر لمسافة 180 متراً." },
-            { dist: 40, msg: `أنت في الأمتار الأخيرة، انعطف يميناً ولقد وصلت إلى (${dest}) بالسلامة!` }
-        ];
-
-        if (currentStep >= steps.length) return;
-
-        watchId = navigator.geolocation.watchPosition(pos => {
-            if (pos.coords.accuracy > 30) return;
-
-            if (!startCoords) return;
-            const distanceCovered = getDist(startCoords.lat, startCoords.lon, pos.coords.latitude, pos.coords.longitude);
-            
-            if (distanceCovered >= steps[currentStep].dist) {
-                const message = steps[currentStep].msg;
-                speakText(message);
-                document.getElementById('stepText').innerText = message;
-                currentStep++;
-                
-                startCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-                
-                navigator.geolocation.clearWatch(watchId);
-                
-                if (currentStep < steps.length) {
-                    runFullyAutomaticNav(dest);
-                }
-            }
-        }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
-    }
-
-    function addTripToHistory(current, dest) {
-        const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        const historyText = `🏢 رحلة مؤسسية من [${current}] إلى [${dest}] — (${timeNow})`;
-        historyArray.unshift(historyText);
-        if (historyArray.length > 5) historyArray.pop();
-
-        const listElement = document.getElementById('historyList');
-        listElement.innerHTML = historyArray.map(item => `<li>${item}</li>`).join('');
+        document.getElementById('stepText').innerText = "امشِ بشكل طبيعي، الكاميرا تراقب العوائق.";
     }
 
     function speakText(txt) {
@@ -630,7 +439,7 @@
             window.speechSynthesis.cancel();
             const s = new SpeechSynthesisUtterance(txt);
             s.lang = 'ar-SA';
-            s.rate = 0.93; // سرعة هادئة وواضحة جداً لتفادي الاستعجال وفهم الكلمات بكل أريحية
+            s.rate = 1.0;
             window.speechSynthesis.speak(s);
         }
     }

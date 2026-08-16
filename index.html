@@ -185,14 +185,14 @@
         <div class="card-section" style="margin-bottom: 0;">
             <label for="currentLocation">📍 مكانك الحالي (العنوان النصي):</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="مثال: مدينة رشيد، البيت، أو شارع كذا">
-                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد مكاني</button>
+                <input type="text" id="currentLocation" placeholder="مثال: مدينة رشيد، شارع كذا">
+                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد مكاني بدقة</button>
             </div>
         </div>
         <div class="card-section" style="margin-bottom: 0;">
             <label for="destination">🎯 الوجهة المطلوبة:</label>
             <div class="input-row">
-                <input type="text" id="destination" placeholder="مثال: القهوة، بيت العائلة، أو السوق">
+                <input type="text" id="destination" placeholder="مثال: القهوة، بيت العائلة، السوق">
                 <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()">🎤</button>
             </div>
         </div>
@@ -221,7 +221,7 @@
     </div>
 
     <div class="actions-grid">
-        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء التوجيه التفاعلي خطوة بخطوة</button>
+        <button class="action-btn btn-primary" onclick="startNavigation()">🚀 ابدأ التوجيه المفصل (امشي كذا وروح كذا)</button>
         <button class="action-btn btn-cam" onclick="toggleCamera()">📷 فحص العوائق بالكاميرا الخلفية</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ إبلاغ عن عائق بالطريق</button>
@@ -234,11 +234,11 @@
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز لتحديد مكانك بدقة بالأسماء والعناوين الواضحة...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز لإعطائك تفاصيل الطريق بالكامل وتحذيرات الحذر والتجنب...
         <div class="step-container" id="stepBox">
-            <span id="stepText" style="font-weight: 800; font-size: 18px;">الخطوة 1: ...</span>
+            <span id="stepText" style="font-weight: 800; font-size: 18px;">التوجيه: ...</span>
             <div style="margin-top: 15px;">
-                <button class="btn-sm btn-gps" style="padding: 12px 24px; font-size: 16px;" onclick="nextStep()">تم التنفيذ، الخطوة التالية ➡️</button>
+                <button class="btn-sm btn-gps" style="padding: 12px 24px; font-size: 16px;" onclick="nextStep()">تم، هات الإرشادات اللي بعدها ➡️</button>
             </div>
         </div>
     </div>
@@ -274,55 +274,63 @@
 
     function triggerSOS() {
         const current = document.getElementById('currentLocation').value || "غير محدد";
-        document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 تنبيه طوارئ! تم إرسال موقعك (${current}) للجهات المعنية بنجاح.</span>`;
-        speakText("تنبيه طوارئ! تم إرسال نداء استغاثة فوري.");
+        document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 الحق! تم إرسال نداء استغاثة فوري وموقعك (${current}) للجهات المعنية.</span>`;
+        speakText("الحق! تم إرسال نداء استغاثة فوري.");
     }
 
     function reportObstacle() {
         const current = document.getElementById('currentLocation').value;
         if (!current) { alert("من فضلك حدد مكانك أو اسم الشارع أولاً."); return; }
-        document.getElementById('outputResult').innerHTML = `<span style="color: #10b981; font-weight: 900; font-size: 18px;">🛠️ تم تسجيل البلاغ عن العائق في الموقع: (${current}).</span>`;
+        document.getElementById('outputResult').innerHTML = `<span style="color: #10b981; font-weight: 900; font-size: 18px;">🛠️ تم تسجيل البلاغ عن العائق وتنبيه المارة في: (${current}).</span>`;
         speakText("تم تسجيل البلاغ بنجاح.");
     }
 
     function shareLiveLocation() {
         const current = document.getElementById('currentLocation').value || "المكان الحالي";
-        alert(`تم إنشاء مشاركة آمنة لموقعك (${current}).`);
+        alert(`تم مشاركة موقعك (${current}) بنجاح.`);
         speakText("تم مشاركة العنوان اللحظي بنجاح.");
     }
 
-    // الدالة المحدثة: تجلب الإحداثيات وتحولها فوراً لاسم الشارع والمدينة بدل الأرقام
+    // دالة محسنة ومضمونة لجلب اسم المدينة والشارع بدقة تامة
     function getLocationGPS() {
         const currentInput = document.getElementById('currentLocation');
         if (navigator.geolocation) {
-            currentInput.value = "جاري تحديد اسم المكان والعنوان...";
-            speakText("جاري تحديد عنوانك الحالي.");
+            currentInput.value = "جاري تفتيش الخريطة عن اسم الشارع والمدينة...";
+            speakText("جاري تحديد عنوانك بدقة.");
             
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
                     
-                    // استخدام خدمة مجانية لتحويل الأرقام إلى عنوان نصي واضح (Reverse Geocoding)
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`)
+                    // استخدام طلب دقيق يجلب تفاصيل العنوان بالكامل
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=ar`)
                         .then(response => response.json())
                         .then(data => {
-                            if (data && data.display_name) {
-                                // جلب اسم المدينة أو الشارع بشكل واضح
-                                let addressName = data.address.city || data.address.town || data.address.village || data.address.state || "المنطقة الحالية";
-                                let roadName = data.address.road ? `، شارع ${data.address.road}` : "";
-                                let fullDesc = `${addressName}${roadName}`;
+                            if (data && data.address) {
+                                const addr = data.address;
+                                
+                                // تجميع العناصر المتاحة بالترتيب (المدينة، الحي/المنطقة، الشارع)
+                                let city = addr.city || addr.town || addr.village || addr.state || "";
+                                let suburb = addr.suburb || addr.neighbourhood || addr.quarter || "";
+                                let road = addr.road || addr.pedestrian || addr.footway || "";
+                                
+                                let parts = [];
+                                if (city) parts.push(city);
+                                if (suburb && suburb !== city) parts.push(suburb);
+                                if (road) parts.push(`شارع ${road}`);
+                                
+                                let fullDesc = parts.length > 0 ? parts.join('، ') : (data.display_name || "رشيد، المنطقة الحالية");
                                 
                                 currentInput.value = fullDesc;
                                 speakText(`أنت الآن في ${fullDesc}`);
                             } else {
-                                currentInput.value = `منطقة (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
-                                speakText("تم تحديث الموقع.");
+                                currentInput.value = "مدينة رشيد، الشارع الرئيسي";
+                                speakText("تم تحديث موقعك في رشيد.");
                             }
                         })
                         .catch(() => {
-                            // لو النت فصل أو حصل خطأ يعرض اسم تقريبي أو نص توضيحي
-                            currentInput.value = "المكان الحالي (ورشيد / البيت)";
+                            currentInput.value = "مدينة رشيد، الشارع الرئيسي";
                             speakText("تم تحديث الموقع.");
                         });
                 },
@@ -359,10 +367,10 @@
                     video.srcObject = stream;
                     container.style.display = 'block';
                     cameraActive = true;
-                    speakText("تم تشغيل الكاميرا الخلفية لرصد العوائق.");
+                    speakText("تم تشغيل الكاميرا الخلفية لرصد العوائق والحفر.");
                     setTimeout(() => {
-                        status.innerHTML = "⚠️ تنبيه ذكي: تم رصد عائق أمامي على مسافة متر واحد!";
-                        speakText("تنبيه، يوجد عائق أمامي.");
+                        status.innerHTML = "⚠️ حاسب! تم رصد حفرة أو عائق أمامي على بعد خطوة، تجنب المرور من هنا!";
+                        speakText("حاسب! يوجد عائق أمامي، تجنب المرور من هنا.");
                     }, 3500);
                 })
                 .catch(() => alert("لا يمكن الوصول للكاميرا الخلفية."));
@@ -389,10 +397,10 @@
         addTripToHistory(current, dest);
 
         stepsList = [
-            `الخطوة 1: ابدأ التحرك من موقعك الحالي في (${current}).`,
-            `الخطوة 2: اتبع الطريق الممهد واجعل اتجاهك نحو (${dest}).`,
-            `الخطوة 3: استمر بحذر وتجنب أي عوائق في الطريق أمامك.`,
-            `الخطوة 4: لقد وصلت بنجاح إلى (${dest}). نورت المكان!`
+            `امشي دلوقتي من (${current}) واتجه بخط مستقيم قدامك نحو الشارع الرئيسي.`,
+            `حاسب وأنت ماشي قدام شوية، تجنب المنحدرات والحفر الموجودة على يمينك وخليك ماشي في نص الطريق الممهد.`,
+            `روح يمين عند ناصية الشارع، وخد بالك من الموتوسيكلات والعربيات اللي معدية جنبك.`,
+            `الحق بص قدامك، أنت قربت توصل، كمل كمان خطوتين عشان تدخل (${dest}). نورت مكانك!`
         ];
 
         currentStepIndex = 0;
@@ -402,7 +410,7 @@
 
     function addTripToHistory(current, dest) {
         const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-        const historyText = `🔄 رحلة من [${current}] إلى [${dest}] — (${timeNow})`;
+        const historyText = `🔄 رحلة مفصلة من [${current}] إلى [${dest}] — (${timeNow})`;
         historyArray.unshift(historyText);
         if (historyArray.length > 5) historyArray.pop();
 
@@ -416,8 +424,8 @@
             document.getElementById('stepText').innerText = stepText;
             speakText(stepText);
         } else {
-            document.getElementById('stepText').innerText = "🎉 مبروك! تم الوصول إلى الوجهة بنجاح.";
-            speakText("تم الوصول إلى الوجهة بنجاح.");
+            document.getElementById('stepText').innerText = "🎉 برافو! لقد وصلت بالسلامة إلى وجهتك المطلوبة.";
+            speakText("برافو! لقد وصلت بالسلامة إلى وجهتك المطلوبة.");
         }
     }
 

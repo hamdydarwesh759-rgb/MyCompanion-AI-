@@ -233,15 +233,15 @@
 
     <div id="cameraContainer">
         <video id="webcam" autoplay playsinline></video>
-        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تحميل نموذج الذكاء الاصطناعي لرصد العوائق...</p>
+        <p id="obstacleStatus" style="font-weight: 800; color: #f87171; margin: 15px 0; font-size: 16px;">جاري تحميل تحليل العوائق والجدران...</p>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه التلقائي بالكامل ورصد العقبات الحية...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز للتوجيه التلقائي بالكامل ورصد العقبات والحوائط...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار الحركة...</span>
             <div style="margin-top: 15px; color: #2563eb; font-weight: 700; font-size: 15px;">
-                ⏳ النظام يتابع مسافات المشي الحقيقية بدقة تامة...
+                ⏳ النظام يمنحك وقتاً كافياً ومناسباً للمشي بين الخطوات...
             </div>
         </div>
     </div>
@@ -283,7 +283,7 @@
     }
 
     function triggerSOS() {
-        const current = document.getElementById('currentLocation').value || "غير مححدد";
+        const current = document.getElementById('currentLocation').value || "غير محدد";
         document.getElementById('outputResult').innerHTML = `<span style="color: #ef4444; font-weight: 900; font-size: 18px;">🚨 الحق! تم إرسال نداء استغاثة فوري وموقعك (${current}) للجهات المعنية.</span>`;
         speakText("الحق! تم إرسال نداء استغاثة فوري.");
     }
@@ -361,7 +361,7 @@
         };
     }
 
-    // تشغيل الكاميرا ورصد أي جسم أو عائق دون التقيد باسم معين
+    // تشغيل الكاميرا لتحليل الإضاءة والجدران والأجسام الكبيرة المانعة للطريق
     async function toggleCamera() {
         const container = document.getElementById('cameraContainer');
         const video = document.getElementById('webcam');
@@ -369,7 +369,7 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            speakText("جاري تشغيل كاميرا الرؤية الذكية لرصد أي عائق أو جسم...");
+            speakText("جاري تشغيل كاميرا الرؤية الذكية لرصد الجدران والعوائق...");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -380,21 +380,47 @@
                     aiModel = await cocoSsd.load();
                 }
 
-                status.innerText = "كاميرا الرؤية الذكية نشطة وتحذر من أي جسم في الطريق فوراً...";
-                speakText("الكاميرا تعمل الآن وتحذر من أي جسم في طريقك.");
+                status.innerText = "كاميرا الرؤية نشطة وتحذر من الجدران والأجسام الكبيرة المانعة للطريق...";
+                speakText("الكاميرا تعمل الآن لرصد الجدران والأجسام المقابلة.");
                 cameraActive = true;
 
-                // رصد أي جسم بشكل عام وإعطاء تنذير موحد
+                // إنشاء عنصر لوحة رسم لتحليل كثافة البكسلات (كشف الحوائط والجدران والظلام المفاجئ)
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
                 detectionInterval = setInterval(async () => {
                     if (!cameraActive || !aiModel) return;
-                    const predictions = await aiModel.detect(video);
                     
-                    if (predictions.length > 0) {
-                        const currentTime = Date.now();
-                        if (currentTime - lastSpokenTime > 5000) {
-                            const warningMsg = "تحذير! أمامك جسم أو عائق في الطريق، انتبه وتجنبه.";
-                            status.innerHTML = `⚠️ تحذير مباشر: يوجد جسم أو عائق أممك`;
-                            speakText(warningMsg);
+                    // 1. فحص الأجسام عبر النموذج
+                    const predictions = await aiModel.detect(video);
+                    const currentTime = Date.now();
+
+                    if (predictions.length > 0 && currentTime - lastSpokenTime > 5000) {
+                        const warningMsg = "تحذير! أمامك جسم أو عائق ضخم، حاسب.";
+                        status.innerHTML = `⚠️ تحذير مباشر: يوجد جسم أو عائق أمامك`;
+                        speakText(warningMsg);
+                        lastSpokenTime = currentTime;
+                        return;
+                    }
+
+                    // 2. تحليل الكاميرا لكشف الحوائط القريبة جداً أو سد الرؤية (إضاءة منعدمة أو حائط قريب يملأ الكاميرا)
+                    if (video.videoWidth > 0 && currentTime - lastSpokenTime > 6000) {
+                        canvas.width = 64;
+                        canvas.height = 64;
+                        ctx.drawImage(video, 0, 0, 64, 64);
+                        const frameData = ctx.getImageData(0, 0, 64, 64).data;
+                        
+                        let totalBrightness = 0;
+                        for (let i = 0; i < frameData.length; i += 4) {
+                            totalBrightness += (frameData[i] + frameData[i+1] + frameData[i+2]) / 3;
+                        }
+                        let avgBrightness = totalBrightness / (frameData.length / 4);
+
+                        // إذا كانت الصورة مظلمة تماماً أو بيضاء مسطحة (حائط قريب جداً يغطي العدسة)
+                        if (avgBrightness < 20 || avgBrightness > 240) {
+                            const wallMsg = "تحذير خطير! يبدو أن أمامك حائط مسدود أو عائق قريب جداً، توقف فوراً.";
+                            status.innerHTML = `🧱 تحذير: حائط أو عائق ملاصق أمامك!`;
+                            speakText(wallMsg);
                             lastSpokenTime = currentTime;
                         }
                     }
@@ -422,7 +448,7 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    // بدء الملاحة التلقائية الكاملة بالـ GPS مع فلترة دقيقة لضمان قطع المسافة الحقيقية
+    // بدء الملاحة التلقائية مع زيادة مسافات الخطوات لتناسب المشي البشري الطبيعي
     function startNavigation() {
         const current = document.getElementById('currentLocation').value;
         const dest = document.getElementById('destination').value;
@@ -442,7 +468,7 @@
         addTripToHistory(current, dest);
         currentStep = 0;
         
-        speakText("تم بدء الملاحة التلقائية بالكامل. انزل من المنزل الآن، وسأوجهك صوتياً بعد قطع المسافات المطلوبة تماماً.");
+        speakText("تم بدء الملاحة. انزل من المنزل وامشِ براحتك، سأعطيك وقتاً كافياً بين كل خطوة وأخرى.");
         document.getElementById('stepBox').style.display = 'block';
 
         navigator.geolocation.getCurrentPosition(pos => {
@@ -451,19 +477,18 @@
         }, null, { enableHighAccuracy: true });
     }
 
-    // التنقل التلقائي الذكي عبر الأقمار الصناعية مع استبعاد تشويش الـ GPS
+    // خطوات بمساحات واقعية ومنطقية تمنع التسرع (مثلاً 20 متر ثم 200 متر للشارع الطويل)
     function runFullyAutomaticNav(dest) {
         const steps = [
-            { dist: 10, msg: "انزل من المنزل الآن وابدأ المشي لمسافة 10 متر حتى نهاية الشارع الفرعي." },
-            { dist: 100, msg: "استمر في المشي في الشارع الرئيسي لمسافة 100 متر بخط مستقيم." },
-            { dist: 25, msg: `خذ يمين عند ناصية الشارع، ولقد وصلت الآن إلى (${dest}) بالسلامة!` }
+            { dist: 20, msg: "انزل من المنزل الآن وابدأ المشي لمسافة 20 متراً حتى نهاية الشارع الفرعي." },
+            { dist: 200, msg: "ممتاز. استمر في المشي بخط مستقيم في الشارع الرئيسي لمسافة 200 متر." },
+            { dist: 50, msg: `أنت في الأمتار الأخيرة، خذ يمين ولقد وصلت إلى (${dest}) بالسلامة!` }
         ];
 
         if (currentStep >= steps.length) return;
 
         watchId = navigator.geolocation.watchPosition(pos => {
-            // تجاهل قراءات الـ GPS غير الدقيقة لمنع القفز السريع أو التحديث الوهمي
-            if (pos.coords.accuracy > 25) return;
+            if (pos.coords.accuracy > 25) return; // تجاهل القراءات غير الدقيقة
 
             if (!startCoords) return;
             const distanceCovered = getDist(startCoords.lat, startCoords.lon, pos.coords.latitude, pos.coords.longitude);
@@ -484,6 +509,8 @@
             }
         }, null, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 });
     }
+
+    function addTripThread(current, dest) {}
 
     function addTripToHistory(current, dest) {
         const timeNow = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });

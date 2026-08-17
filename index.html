@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Smart Accessibility — Enterprise Early Vision System</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+    <title>AI Smart Accessibility — Wall & Obstacle Early Detector</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%);
@@ -14,7 +12,6 @@
             --text-sub: #94a3b8;
             --primary: #3b82f6;
             --danger: #ef4444;
-            --success: #10b981;
             --border: #334155;
             --input-bg: #1e293b;
         }
@@ -67,8 +64,7 @@
         .header-btns { display: flex; gap: 15px; align-items: center; }
         .btn-theme { background: #334155; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; }
         
-        .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; }
-        .online { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+        .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
 
         .dashboard-grid {
             display: grid;
@@ -196,11 +192,11 @@
 <div class="app-container">
     <div class="header">
         <div>
-            <h2>AI Smart Accessibility — Early Detection System</h2>
-            <div class="supervisor">نظام الكشف المبكر والاستباقي للعوائق من مسافة بعيدة</div>
+            <h2>AI Smart Accessibility — Wall & Obstacle Detector</h2>
+            <div class="supervisor">نظام كشف الحوائط والعوائق الثابتة من مسافة مبكرة</div>
         </div>
         <div class="header-btns">
-            <span id="netStatus" class="status-badge online">Enterprise Online</span>
+            <span class="status-badge">Wall Scanner Active</span>
             <button class="btn-theme" onclick="toggleHighContrast()">👁️ تباين عالي</button>
         </div>
     </div>
@@ -209,14 +205,14 @@
         <div class="card-section" style="margin-bottom: 0;">
             <label for="currentLocation">📍 الموقع الحالي:</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="حدد موقعك">
-                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد الموقع</button>
+                <input type="text" id="currentLocation" placeholder="الموقع">
+                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد</button>
             </div>
         </div>
         <div class="card-section" style="margin-bottom: 0;">
             <label for="destination">🎯 الوجهة المطلوبة:</label>
             <div class="input-row">
-                <input type="text" id="destination" placeholder="وجهتك">
+                <input type="text" id="destination" placeholder="الوجهة">
                 <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()">🎤</button>
             </div>
         </div>
@@ -224,7 +220,7 @@
 
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي</button>
-        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل كاميرا الرصد المبكر من مسافة بعيدة</button>
+        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل كاميرا كشف الحوائط المبكر</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات</button>
@@ -232,7 +228,7 @@
 
     <div id="enterpriseCameraContainer" class="enterprise-camera-box">
         <div class="hud-overlay">
-            <div class="radar-tag">📡 الرصد الاستباقي المبكر نشط</div>
+            <div class="radar-tag">🧱 كشف الحوائط والثوابت نشط</div>
             <div class="radar-tag" id="fpsCounter">FPS: 60</div>
         </div>
         
@@ -242,13 +238,13 @@
         </div>
 
         <div class="threat-alert-box">
-            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الكاميرا تبحث عن أي جسم في الأفق المبكر...</p>
-            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">استباقي</div>
+            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الكاميرا تمسح الأفق بحثاً عن أي حائط أو عائق ثابت...</p>
+            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">جاهز</div>
         </div>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> الكاميرا الآن مبرمجة لترصد العوائق من مسافة بعيدة وتلفت انتباهك قبل الاقتراب...
+        <strong style="font-size: 18px;">حالة النظام:</strong> تمت إضافة رادار الحوائط الثابتة للتحذير المبكر قبل الاقتراب...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار البدء...</span>
         </div>
@@ -263,17 +259,11 @@
 </div>
 
 <script>
-    let historyArray = [];
-    let currentStep = 0;
     let cameraActive = false;
     let detectionInterval = null;
-    let aiModel = null;
     let lastSpokenTime = 0;
 
-    function toggleHighContrast() {
-        document.body.classList.toggle('high-contrast');
-    }
-
+    function toggleHighContrast() { document.body.classList.toggle('high-contrast'); }
     function triggerSOS() { speakText("تم إطلاق نداء طوارئ المؤسسة."); }
     function reportObstacle() { speakText("تم تسجيل البلاغ في الشبكة."); }
     function shareLiveLocation() { speakText("تم مشاركة الإحداثيات."); }
@@ -289,126 +279,113 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            status.innerText = "جاري تشغيل عدسة الرصد المبكر...";
-            speakText("تم تشغيل كاميرا الرصد المبكر. سأحذرك فور رؤية أي جسم من مسافة بعيدة.");
+            status.innerText = "جاري تشغيل رادار الحوائط...";
+            speakText("تم تشغيل نظام كشف الحوائط المبكر. سأحذرك قبل الاقتراب من أي حائط.");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } 
+                    video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } } 
                 });
                 video.srcObject = stream;
-                
-                if (!aiModel) {
-                    status.innerText = "جاري تحميل نماذج الذكاء الاصطناعي الاستباقي...";
-                    aiModel = await cocoSsd.load();
-                }
-
-                status.innerText = "الكاميرا تراقب الأفق بمدى واسع...";
                 cameraActive = true;
 
-                // حلقة فحص سريعة جداً كل 150 ملي ثانية لضمان الاستجابة اللحظية الفورية
-                detectionInterval = setInterval(async () => {
-                    if (!cameraActive) return;
+                const analysisCanvas = document.createElement('canvas');
+                analysisCanvas.width = 160;
+                analysisCanvas.height = 120;
+                const analysisCtx = analysisCanvas.getContext('2d');
 
-                    if (video.videoWidth > 0) {
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
+                let previousFrameData = null;
+
+                // فحص فائق السرعة كل 70 ميلي ثانية لكشف الحركة والثوابت
+                detectionInterval = setInterval(() => {
+                    if (!cameraActive || video.videoWidth === 0) return;
+
+                    analysisCtx.drawImage(video, 0, 0, 160, 120);
+                    const currentFrame = analysisCtx.getImageData(0, 0, 160, 120);
+                    const data = currentFrame.data;
+
+                    let leftSum = 0, rightSum = 0, centerSum = 0;
+                    let leftCount = 0, rightCount = 0, centerCount = 0;
+                    
+                    // متغيرات لقياس "التسطح والتجانس في المنتصف" (لكشف الحوائط القريبة الثابتة)
+                    let centerVariance = 0;
+                    let centerPixels = [];
+
+                    for (let y = 0; y < 120; y++) {
+                        for (let x = 0; x < 160; x++) {
+                            const idx = (y * 160 + x) * 4;
+                            const brightness = (data[idx] + data[idx+1] + data[idx+2]) / 3;
+
+                            if (x < 53) {
+                                leftSum += brightness;
+                                leftCount++;
+                            } else if (x < 106) {
+                                centerSum += brightness;
+                                centerCount++;
+                                if (y > 30 && y < 90) { // التركيز على منتصف الكادر حيث يظهر الحائط أمام الشخص
+                                    centerPixels.push(brightness);
+                                }
+                            } else {
+                                rightSum += brightness;
+                                rightCount++;
+                            }
+                        }
                     }
 
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    const currentTime = Date.now();
-                    let guidanceMsg = "الطريق أمامك آمن.";
+                    const leftAvg = leftSum / leftCount;
+                    const centerAvg = centerSum / centerCount;
+                    const rightAvg = rightSum / rightCount;
+
+                    // حساب تباين المنتصف (الحائط الثابت القريب يكون له تباين منخفض أو كتلة لونية مسطحة تملأ الكادر)
+                    let varianceSum = 0;
+                    for (let i = 0; i < centerPixels.length; i++) {
+                        varianceSum += Math.abs(centerPixels[i] - centerAvg);
+                    }
+                    let centerTextureUniformity = varianceSum / (centerPixels.length || 1);
+
+                    let guidanceMsg = "الطريق أمامك آمن، استمر.";
                     let isBlocked = false;
 
-                    try {
-                        if (aiModel) {
-                            const predictions = await aiModel.detect(video);
-                            if (predictions && predictions.length > 0) {
-                                // خفضنا عتبة الثقة إلى 0.15 (حساسية فائقة جداً لرؤية الأجسام من مسافة بعيدة)
-                                const detectedObj = predictions.find(p => p.score > 0.15);
-                                if (detectedObj) {
-                                    isBlocked = true;
-                                    const [x, y, width, height] = detectedObj.bbox;
-                                    const frameWidth = video.videoWidth || 1280;
-                                    const objectCenterX = x + (width / 2);
-                                    const objName = detectedObj.class;
-                                    
-                                    // حساب مساحة الجسم في الكادر لتحديد هل هو بعيد أم قريب جداً
-                                    const frameArea = frameWidth * (video.videoHeight || 720);
-                                    const objArea = width * height;
-                                    const isFarAway = objArea < (frameArea * 0.12); // لو مساحته أقل من 12% يبقى في الأفق البعيد
+                    // 1. فحص الحوائط الثابتة المقتربة (لو المنتصف بقى سطح ثابت متجانس ومقترب)
+                    // إذا كان تباين المنتصف منخفضاً جداً (سطح جدار مسطح) ومتوسط الإضاءة يملأ الرؤية
+                    if (centerTextureUniformity < 18 && (centerAvg < 50 || centerAvg > 200)) {
+                        isBlocked = true;
+                        guidanceMsg = "انتبه، حائط أو سد مقترب أمامك مباشرة، استعد للتوقف أو الانحراف.";
+                    } 
+                    // 2. فحص الحركة المفاجئة والعوائق الجانبية أو المتحركة
+                    else if (previousFrameData) {
+                        const diffLeft = Math.abs(leftAvg - previousFrameData.left);
+                        const diffCenter = Math.abs(centerAvg - previousFrameData.center);
+                        const diffRight = Math.abs(rightAvg - previousFrameData.right);
 
-                                    if (isFarAway) {
-                                        // إنذار مبكر استباقي من مسافة بعيدة
-                                        if (objectCenterX < frameWidth * 0.45) {
-                                            guidanceMsg = `انتبه، ${objName} في الأفق على اليسار، استعد للانحراف.`;
-                                        } else if (objectCenterX > frameWidth * 0.55) {
-                                            guidanceMsg = `انتبه، ${objName} في الأفق على اليمين، استعد للانحراف.`;
-                                        } else {
-                                            guidanceMsg = `انتبه، ${objName} أمامك من بعيد، استعد للمسار البديل.`;
-                                        }
-                                    } else {
-                                        // إنذار فوري طارئ لو الجسم قرب وبقى قريب منك
-                                        if (objectCenterX < frameWidth * 0.45) {
-                                            guidanceMsg = `احذر، ${objName} قريب جداً على اليسار، اتحرك يميناً الآن!`;
-                                        } else if (objectCenterX > frameWidth * 0.55) {
-                                            guidanceMsg = `احذر، ${objName} قريب جداً على اليمين، اتحرك يساراً الآن!`;
-                                        } else {
-                                            guidanceMsg = `احذر، ${objName} أمامك مباشرة، اتحرك يميناً لتفاديه فوراً!`;
-                                        }
-                                    }
-
-                                    // رسم المربع المرئي على الكاميرا
-                                    ctx.strokeStyle = isFarAway ? "#f59e0b" : "#ef4444"; // أصفر للبعيد، أحمر للقريب
-                                    ctx.lineWidth = 5;
-                                    ctx.strokeRect(x, y, width, height);
-                                    
-                                    ctx.fillStyle = isFarAway ? "rgba(245, 158, 11, 0.85)" : "rgba(239, 68, 68, 0.9)";
-                                    ctx.fillRect(x, y > 40 ? y - 40 : 0, width, 40);
-                                    
-                                    ctx.fillStyle = "#ffffff";
-                                    ctx.font = "bold 16px Segoe UI";
-                                    ctx.fillText(`${objName} - ${guidanceMsg}`, x + 8, y > 40 ? y - 12 : 28);
-                                }
+                        if (diffLeft > 16 || diffCenter > 16 || diffRight > 16) {
+                            isBlocked = true;
+                            if (diffLeft > diffCenter && diffLeft > diffRight) {
+                                guidanceMsg = "الطريق مغلق على اليسار، اتحرك يميناً.";
+                            } else if (diffRight > diffCenter && diffRight > diffLeft) {
+                                guidanceMsg = "الطريق مغلق على اليمين، اتحرك يساراً.";
+                            } else {
+                                guidanceMsg = "تنبيه، عائق أمامك، اتحرك يميناً لتفاديه.";
                             }
                         }
-                    } catch (e) {}
+                    }
 
-                    // الكشف عن الحوائط والانسداد من مسافة مبكرة
-                    try {
-                        if (video.videoWidth > 0 && !isBlocked) {
-                            const sampleCanvas = document.createElement('canvas');
-                            const sampleCtx = sampleCanvas.getContext('2d');
-                            sampleCanvas.width = 64;
-                            sampleCanvas.height = 64;
-                            sampleCtx.drawImage(video, 0, 0, 64, 64);
-                            const frameData = sampleCtx.getImageData(0, 0, 64, 64).data;
-                            
-                            let totalBrightness = 0;
-                            for (let i = 0; i < frameData.length; i += 4) {
-                                totalBrightness += (frameData[i] + frameData[i+1] + frameData[i+2]) / 3;
-                            }
-                            let avgBrightness = totalBrightness / (frameData.length / 4);
+                    previousFrameData = { left: leftAvg, center: centerAvg, right: rightAvg };
 
-                            if (avgBrightness < 15 || avgBrightness > 248) {
-                                isBlocked = true;
-                                guidanceMsg = "تنبيه مبكر، حائط مسدود أو إظلام تام يقترب منك، استعد للانحراف يميناً.";
-                            }
-                        }
-                    } catch (e) {}
-
-                    // سرعة النطق الاستباقي (فاصل زمني أقصر 1.2 ثانية لتنطق فور الرؤية دون تأخير)
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     if (isBlocked) {
                         status.innerHTML = `🚨 <span style="color: #f87171; font-weight: 900;">${guidanceMsg}</span>`;
-                        if (currentTime - lastSpokenTime > 1200) {
+                        
+                        const now = Date.now();
+                        if (now - lastSpokenTime > 1000) {
                             speakText(guidanceMsg);
-                            lastSpokenTime = currentTime;
+                            lastSpokenTime = now;
                         }
                     } else {
                         status.innerHTML = `✅ <span style="color: #34d399;">الطريق آمن، استمر في السير.</span>`;
                     }
 
-                }, 150);
+                }, 70);
 
             } catch (err) {
                 alert("تعذر تشغيل الكاميرا.");
@@ -425,9 +402,9 @@
     }
 
     function startNavigation() {
-        speakText("تم بدء نظام الملاحة المبكرة.");
+        speakText("تم بدء نظام الملاحة الشامل.");
         document.getElementById('stepBox').style.display = 'block';
-        document.getElementById('stepText').innerText = "الكاميرا تفحص الأفق من مسافة بعيدة.";
+        document.getElementById('stepText').innerText = "الكاميرا تفحص الحوائط والعوائق مسبقاً.";
     }
 
     function speakText(txt) {

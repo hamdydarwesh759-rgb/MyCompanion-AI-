@@ -193,6 +193,58 @@
         .step-container { margin-top: 20px; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 14px; border-right: 6px solid var(--primary); display: none; }
         .history-box { max-height: 200px; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
         .history-box li { padding: 12px 18px; margin-bottom: 10px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 12px; color: var(--text-sub); font-weight: 700; }
+
+        .camera-help {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 18px;
+            background: #111827;
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 800;
+            border-bottom: 1px solid #374151;
+        }
+
+        .guide-box {
+            margin-top: 25px;
+            padding: 22px;
+            background: rgba(59, 130, 246, 0.10);
+            border: 2px solid var(--border);
+            border-radius: 18px;
+            line-height: 1.9;
+        }
+
+        .guide-box strong {
+            color: #60a5fa;
+            font-size: 18px;
+        }
+
+        .guide-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .guide-actions button {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 15px;
+            background: #1e293b;
+            color: white;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        @media (max-width: 800px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .app-container { padding: 25px 18px; }
+            .camera-help { flex-direction: column; }
+            .header { flex-direction: column; gap: 18px; align-items: flex-start; }
+            .actions-grid { grid-template-columns: 1fr; }
+            .btn-primary, .btn-enterprise-cam, .btn-share { grid-column: span 1; }
+        }
     </style>
 </head>
 <body>
@@ -201,34 +253,54 @@
     <div class="header">
         <div>
             <h2>AI Smart Accessibility — Enterprise System</h2>
-            <div class="supervisor">نظام الرادار الفعلي، تحديد الموقع (GPS)، والإدخال الصوتي الكامل</div>
+            <div class="supervisor">نظام الرادار المطور، الإدخال الصوتي، والموقع الفعلي</div>
         </div>
         <div class="header-btns">
-            <span class="status-badge">MAX SENSITIVITY</span>
+            <span class="status-badge">ONLINE</span>
+            <button class="btn-theme" onclick="playPageGuide()">🔊 شرح صوتي</button>
             <button class="btn-theme" onclick="toggleHighContrast()">👁️ تباين عالي</button>
         </div>
     </div>
 
     <div class="dashboard-grid">
         <div class="card-section" style="margin-bottom: 0;">
-            <label for="currentLocation">📍 الموقع الحالي (المدينة والشارع):</label>
+            <label for="currentLocation">📍 الموقع الحالي:</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="اضغط تحديد لجلب موقعك الفعلي...">
-                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد</button>
+                <input type="text" id="currentLocation" placeholder="اكتب موقعك الحالي أو اضغط تحديد..." 
+                   aria-label="الموقع الحالي">
+                <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">📍 تحديد</button>
             </div>
         </div>
         <div class="card-section" style="margin-bottom: 0;">
-            <label for="destination">🎯 الوجهة المطلوبة (أو انطقها صوتياً):</label>
+            <label for="destination">🎯 الوجهة المطلوبة:</label>
             <div class="input-row">
-                <input type="text" id="destination" placeholder="انطق الوجهة أو اكتبها...">
-                <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()" title="اضغط لتحديد الوجهة صوتياً">🎤</button>
+                <input type="text" id="destination" placeholder="اكتب الوجهة أو اضغط الميكروفون..." 
+                   aria-label="الوجهة المطلوبة">
+                <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()" title="نطق الوجهة">🎤 نطق</button>
             </div>
+        </div>
+    </div>
+
+
+    <div class="guide-box">
+        <strong>🎙️ طريقة الاستخدام</strong>
+        <div>
+            1. حدّد موقعك الحالي.<br>
+            2. اكتب الوجهة أو انطقها من زر الميكروفون.<br>
+            3. اضغط بدء نظام التوجيه الذكي.<br>
+            4. شغّل الكاميرا لضبط الرؤية ورادار العوائق.
+        </div>
+        <div class="guide-actions">
+            <button onclick="speakText('أولاً، حدد موقعك الحالي من خانة الموقع أو اضغط زر تحديد.')">📍 شرح الموقع</button>
+            <button onclick="speakText('ثانياً، أدخل الوجهة المطلوبة أو اضغط زر نطق وتحدث.')">🎯 شرح الوجهة</button>
+            <button onclick="speakText('ثالثاً، شغل الكاميرا ووجهها إلى الطريق لضبط الرؤية ورصد العوائق.')">📷 شرح الكاميرا</button>
+            <button onclick="speakText('إذا احتجت أي تعديل في التصميم أو إضافة وظيفة جديدة، يمكن تعديل الواجهة حسب الحاجة.')">🛠️ التعديلات</button>
         </div>
     </div>
 
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي</button>
-        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل الكاميرا (أقصى حساسية للحوائط)</button>
+        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ ضبط وتشغيل الكاميرا + رادار الحوائط</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات</button>
@@ -236,23 +308,27 @@
 
     <div id="enterpriseCameraContainer" class="enterprise-camera-box">
         <div class="hud-overlay">
-            <div class="radar-tag">⚡ رادار حوائط نشط (حساسية قصوى)</div>
+            <div class="radar-tag">⚡ رادار الحوائط نشط</div>
             <div class="radar-tag" id="fpsCounter">FPS: 60</div>
         </div>
         
-        <div class="camera-viewport">
+        <div class="camera-help">
+                <span>📷 وجّه الكاميرا إلى الطريق</span>
+                <span>⚠️ سيتم تنبيهك عند رصد عائق</span>
+            </div>
+            <div class="camera-viewport">
             <video id="webcam" autoplay playsinline></video>
             <canvas id="radarCanvas" class="radar-overlay"></canvas>
         </div>
 
         <div class="threat-alert-box">
-            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الرادار يمسح الأفق بحثاً عن أي عائق أو حائط...</p>
+            <p id="enterpriseThreatStatus" class="threat-text">🛡️ نظام الرادار يراقِب الأفق...</p>
             <div class="radar-tag" style="background: #1e293b; color: #f87171; border-color: #ef4444;">نشط</div>
         </div>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز لتحديد الموقع (GPS) واستقبال الوجهة (صوتياً) ورصد الحوائط...
+        <strong style="font-size: 18px;">حالة النظام:</strong> النظام جاهز ومستقر تماماً للاستخدام.
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار البدء...</span>
         </div>
@@ -271,76 +347,199 @@
     let detectionInterval = null;
     let lastSpokenTime = 0;
 
+
+    function playPageGuide() {
+        const guide = "أهلاً بك. أولاً حدد موقعك الحالي. بعد ذلك أدخل الوجهة أو انطقها من زر الميكروفون. ثم اضغط بدء نظام التوجيه الذكي. بعد ذلك يمكنك تشغيل الكاميرا لضبط الرؤية وتشغيل رادار العوائق. وإذا احتجت أي تعديل في التصميم أو إضافة وظيفة، يمكن تعديل الواجهة حسب الحاجة.";
+        speakText(guide);
+        addHistory("تشغيل الشرح الصوتي للواجهة.");
+    }
+
     function toggleHighContrast() { 
         document.body.classList.toggle('high-contrast'); 
         speakText("تم تغيير نظام التباين والألوان.");
     }
 
-    function triggerSOS() { speakText("تم إطلاق نداء طوارئ المؤسسة."); }
-    function reportObstacle() { speakText("تم تسجيل البلاغ في الشبكة."); }
-    function shareLiveLocation() { speakText("تم مشاركة الإحداثيات."); }
+    function triggerSOS() { 
+        speakText("تم إطلاق نداء طوارئ المؤسسة."); 
+        addHistory("إطلاق نداء طوارئ SOS.");
+    }
+
+    function reportObstacle() { 
+        speakText("تم تسجيل البلاغ في الشبكة."); 
+        addHistory("تم تسجيل عائق جديد.");
+    }
+
+    function shareLiveLocation() { 
+        speakText("تم مشاركة الإحداثيات."); 
+        addHistory("تم مشاركة الإحداثيات الحية.");
+    }
     
+    function addHistory(text) {
+        const list = document.getElementById('historyList');
+        if (list.children.length === 1 && list.children[0].innerText.includes("لا توجد")) {
+            list.innerHTML = "";
+        }
+        const li = document.createElement('li');
+        li.innerText = text + " (" + new Date().toLocaleTimeString() + ")";
+        list.prepend(li);
+    }
+
     function getLocationGPS() {
         const locationInput = document.getElementById('currentLocation');
+
         if (!navigator.geolocation) {
             alert("خدمة تحديد الموقع غير متوفرة في متصفحك.");
+            speakText("خدمة تحديد الموقع غير متوفرة في متصفحك.");
             return;
         }
 
-        speakText("جاري تحديد موقعك الجغرافي الحالي...");
-        locationInput.value = "جاري تحديد المدينة والشارع...";
+        speakText("جاري تحديد موقعك واسم الشارع...");
+        locationInput.value = "جاري تحديد الموقع واسم الشارع...";
 
         navigator.geolocation.getCurrentPosition(async (position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
             try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`);
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&accept-language=ar`,
+                    {
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
                 const data = await response.json();
-                
                 const address = data.address || {};
-                const city = address.city || address.town || address.village || address.state || "منطقة غير محددة";
-                const street = address.road || address.suburb || address.neighbourhood || "شارع غير مسجل";
-                
-                const fullLocationText = `${city}, ${street}`;
+
+                // Nominatim قد يضع اسم الشارع في أكثر من حقل حسب المنطقة.
+                const street =
+                    address.road ||
+                    address.pedestrian ||
+                    address.residential ||
+                    address.footway ||
+                    address.path ||
+                    address.cycleway ||
+                    address.highway ||
+                    "";
+
+                const area =
+                    address.suburb ||
+                    address.neighbourhood ||
+                    address.quarter ||
+                    address.city_district ||
+                    "";
+
+                const city =
+                    address.city ||
+                    address.town ||
+                    address.village ||
+                    address.municipality ||
+                    address.state ||
+                    "";
+
+                let fullLocationText = "";
+
+                if (street && city) {
+                    fullLocationText = `${street}، ${city}`;
+                } else if (street && area) {
+                    fullLocationText = `${street}، ${area}`;
+                } else if (street) {
+                    fullLocationText = street;
+                } else if (area && city) {
+                    fullLocationText = `${area}، ${city}`;
+                } else if (city) {
+                    fullLocationText = city;
+                } else {
+                    fullLocationText = `خط عرض ${lat.toFixed(5)}، خط طول ${lon.toFixed(5)}`;
+                }
+
                 locationInput.value = fullLocationText;
-                speakText("أنت الآن في: " + fullLocationText);
+
+                if (street) {
+                    speakText("تم تحديد موقعك. أنت الآن في شارع " + street + (city ? "، " + city : "") + ".");
+                    addHistory("تحديد الشارع: " + fullLocationText);
+                } else {
+                    speakText("تم تحديد موقعك، ولكن لم يتم العثور على اسم الشارع في بيانات الخريطة.");
+                    addHistory("تحديد الموقع بدون اسم شارع: " + fullLocationText);
+                }
+
             } catch (error) {
-                const fallbackText = `خط عرض ${lat.toFixed(4)}, خط طول ${lon.toFixed(4)}`;
+                const fallbackText = `خط عرض ${lat.toFixed(5)}، خط طول ${lon.toFixed(5)}`;
                 locationInput.value = fallbackText;
-                speakText("تم تحديد إحداثيات الموقع بنجاح.");
+                speakText("تم تحديد الإحداثيات، لكن تعذر الحصول على اسم الشارع.");
+                addHistory("تحديد الإحداثيات عبر GPS.");
             }
+
         }, (error) => {
-            alert("تعذر تحديد الموقع. تأكد من تفعيل إذن الـ GPS في المتصفح.");
+            alert("تعذر تحديد الموقع. يرجى السماح للموقع من المتصفح أو كتابته يدويًا.");
             locationInput.value = "";
-            speakText("تعذر تحديد الموقع الجغرافي.");
-        }, { timeout: 10000, maximumAge: 0, enableHighAccuracy: true });
+            speakText("تعذر تحديد موقعك. يرجى السماح بالوصول إلى الموقع أو كتابته يدويًا.");
+        }, {
+            timeout: 15000,
+            maximumAge: 0,
+            enableHighAccuracy: true
+        });
     }
 
     function startVoiceInput() {
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
             alert("متصفحك لا يدعم الإدخال الصوتي المباشر.");
+            speakText("متصفحك لا يدعم الإدخال الصوتي المباشر.");
             return;
         }
+
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.lang = 'ar-SA';
+
+        recognition.lang = 'ar-EG';
         recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-        
-        speakText("تفضل، انطق اسم المقر أو الوجهة المطلوبة...");
-        
+        recognition.maxAlternatives = 3;
+        recognition.continuous = false;
+
+        speakText("تفضل، قل اسم المكان الذي تريد الذهاب إليه.");
+
         recognition.onresult = function(event) {
-            const speechResult = event.results[0][0].transcript;
+            let speechResult = event.results[0][0].transcript.trim();
+
+            // إزالة العبارات الشائعة من بداية طلب الوجهة.
+            speechResult = speechResult
+                .replace(/^(أنا\s*)?عايز\s+(أروح|اروح|اذهب|روح)\s+/i, "")
+                .replace(/^عاوز\s+(أروح|اروح|اذهب|روح)\s+/i, "")
+                .replace(/^محتاج\s+(أروح|اروح|اذهب|روح)\s+/i, "")
+                .replace(/^نفسي\s+(أروح|اروح|اذهب|روح)\s+/i, "")
+                .replace(/^ممكن\s+(أروح|اروح|اذهب|روح)\s+/i, "")
+                .replace(/^أريد\s+(أن\s*)?(أذهب|أروح)\s+(إلى\s*)?/i, "")
+                .replace(/^(إلى|الى)\s+/i, "")
+                .replace(/^لـ\s*/i, "")
+                .trim();
+
+            // لو قال جملة كاملة ولم تنجح القواعد، نستخدم النص الأصلي كوجهة.
+            if (!speechResult) {
+                speechResult = event.results[0][0].transcript.trim();
+            }
+
             document.getElementById('destination').value = speechResult;
-            speakText("تم تحديد الوجهة إلى: " + speechResult);
+
+            speakText("تم تحديد الوجهة: " + speechResult);
+            addHistory("تحديد الوجهة صوتياً: " + speechResult);
         };
-        
-        recognition.onerror = function() {
-            speakText("لم أتمكن من سماع الصوت بوضوح، حاول مرة أخرى.");
+
+        recognition.onerror = function(event) {
+            speakText("لم أتمكن من سماع الوجهة بوضوح. حاول مرة أخرى.");
+            addHistory("فشل الإدخال الصوتي للوجهة.");
         };
-        
-        recognition.start();
+
+        recognition.onend = function() {
+            // لا حاجة لأي إجراء إضافي؛ يتم التعامل مع النتيجة في onresult.
+        };
+
+        try {
+            recognition.start();
+        } catch (error) {
+            speakText("تعذر تشغيل الميكروفون. حاول مرة أخرى.");
+        }
     }
 
     async function toggleEnterpriseCamera() {
@@ -352,8 +551,8 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            status.innerText = "جاري تفعيل الحساسية القصوى للرصد المبكر للحوائط...";
-            speakText("تم تشغيل نظام الحساسية القصوى للرادار.");
+            status.innerText = "جاري تشغيل رادار الحوائط...";
+            speakText("تم تشغيل الكاميرا. وجّهها إلى الطريق، وجاري ضبط رادار العوائق.");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -361,6 +560,7 @@
                 });
                 video.srcObject = stream;
                 cameraActive = true;
+                addHistory("تشغيل نظام رادار الحوائط والكاميرا.");
 
                 const analysisCanvas = document.createElement('canvas');
                 analysisCanvas.width = 160;
@@ -416,7 +616,7 @@
 
                     if (centerTextureUniformity < 35) {
                         isBlocked = true;
-                        guidanceMsg = "تنبيه مبكر، حائط أو سد أمامي على مسافة قريبة، استعد للانحراف.";
+                        guidanceMsg = "تنبيه، حائط أو سد أمامي قريب، استعد للانحراف.";
                     } 
                     else if (previousFrameData) {
                         const diffLeft = Math.abs(leftAvg - previousFrameData.left);
@@ -426,9 +626,9 @@
                         if (diffLeft > 8 || diffCenter > 8 || diffRight > 8) {
                             isBlocked = true;
                             if (diffLeft > diffCenter && diffLeft > diffRight) {
-                                guidanceMsg = "تغير في اليسار، اتحرك يميناً بحذر.";
+                                guidanceMsg = "تغير في اليسار، اتحرك يميناً.";
                             } else if (diffRight > diffCenter && diffRight > diffLeft) {
-                                guidanceMsg = "تغير في اليمين، اتحرك يساراً بحذر.";
+                                guidanceMsg = "تغير في اليمين، اتحرك يساراً.";
                             } else {
                                 guidanceMsg = "تنبيه، عائق أمامي تم رصده.";
                             }
@@ -447,7 +647,7 @@
                             lastSpokenTime = now;
                         }
                     } else {
-                        status.innerHTML = `✅ <span style="color: #34d399;">الرادار نشط ويمسح الأفق...</span>`;
+                        status.innerHTML = `✅ <span style="color: #34d399;">الرادار نشط...</span>`;
                     }
 
                 }, 50);
@@ -462,7 +662,8 @@
             if (detectionInterval) clearInterval(detectionInterval);
             container.style.display = 'none';
             cameraActive = false;
-            speakText("تم إيقاف الكاميرا.");
+            speakText("تم إيقاف الكاميرا ورادار العوائق.");
+            addHistory("إيقاف نظام الكاميرا والرادار.");
         }
     }
 
@@ -471,26 +672,25 @@
         const dest = document.getElementById('destination').value;
         
         if(!loc) {
-            speakText("الرجاء تحديد موقعك الحالي أولاً.");
-            alert("يرجى تحديد موقعك الحالي أولاً.");
+            alert("يرجى تحديد الموقع الحالي أولاً.");
             return;
         }
         if(!dest) {
-            speakText("الرجاء تحديد الوجهة المطلوبة أولاً.");
-            alert("يرجى تحديد الوجهة أو نطقها عبر الميكروفون أولاً.");
+            alert("يرجى تحديد الوجهة المطلوبة أولاً.");
             return;
         }
         
-        speakText("تم بدء نظام الملاحة من " + loc + " إلى المقر: " + dest);
+        speakText("تم بدء نظام التوجيه إلى: " + dest);
         document.getElementById('stepBox').style.display = 'block';
-        document.getElementById('stepText').innerText = `الملاحة مفعلة من (${loc}) نحو: ${dest}`;
+        document.getElementById('stepText').innerText = `الملاحة مفعلة نحو: ${dest}`;
+        addHistory("بدء الملاحة إلى: " + dest);
     }
 
     function speakText(txt) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const s = new SpeechSynthesisUtterance(txt);
-            s.lang = 'ar-SA';
+            s.lang = 'ar-EG';
             s.rate = 1.1;
             window.speechSynthesis.speak(s);
         }

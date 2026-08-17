@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Smart Accessibility — Maximum Sensitivity System</title>
+    <title>AI Smart Accessibility — Enterprise System</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%);
@@ -19,11 +19,11 @@
         body.high-contrast {
             --bg-gradient: #000000;
             --card-bg: #000000;
-            --text-main: #ffff00;
+            --text-main: #ffffff;
             --text-sub: #ffffff;
-            --primary: #ffff00;
-            --border: #ffff00;
-            --input-bg: #111111;
+            --primary: #ffffff;
+            --border: #ffffff;
+            --input-bg: #000000;
         }
 
         body {
@@ -59,10 +59,12 @@
         }
 
         .header h2 { margin: 0; color: #60a5fa; font-size: 32px; font-weight: 900; }
+        body.high-contrast .header h2 { color: #ffffff; }
         .supervisor { font-size: 15px; color: var(--text-sub); margin-top: 5px; font-weight: 700; }
 
         .header-btns { display: flex; gap: 15px; align-items: center; }
-        .btn-theme { background: #334155; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; }
+        .btn-theme { background: #334155; color: #fff; border: 2px solid var(--border); padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; }
+        body.high-contrast .btn-theme { background: #000; color: #fff; border-color: #fff; }
         
         .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
 
@@ -89,9 +91,10 @@
             border-radius: 14px; background: var(--card-bg); color: var(--text-main); font-size: 17px; outline: none;
         }
 
-        .btn-sm { padding: 0 20px; border-radius: 14px; border: none; cursor: pointer; font-weight: 800; font-size: 15px; }
+        .btn-sm { padding: 0 20px; border-radius: 14px; border: 2px solid var(--border); cursor: pointer; font-weight: 800; font-size: 15px; }
         .btn-gps { background: #0284c7; color: white; }
         .btn-mic { background: #059669; color: white; }
+        body.high-contrast .btn-gps, body.high-contrast .btn-mic { background: #000; color: #fff; border-color: #fff; }
 
         .enterprise-camera-box {
             background: #000000;
@@ -141,6 +144,7 @@
             font-size: 14px;
             font-weight: 900;
         }
+        body.high-contrast .radar-tag { background: #000; color: #fff; border-color: #fff; }
 
         .threat-alert-box {
             position: absolute;
@@ -155,6 +159,7 @@
             align-items: center;
             z-index: 10;
         }
+        body.high-contrast .threat-alert-box { background: #000; border-color: #fff; }
 
         .threat-text {
             font-size: 18px;
@@ -162,6 +167,7 @@
             color: #f87171;
             margin: 0;
         }
+        body.high-contrast .threat-text { color: #ffffff; }
 
         .actions-grid {
             display: grid;
@@ -170,7 +176,7 @@
             margin-top: 25px;
         }
         .action-btn {
-            padding: 20px; border: none; border-radius: 16px; color: white; font-size: 16px; font-weight: 800;
+            padding: 20px; border: 2px solid var(--border); border-radius: 16px; color: white; font-size: 16px; font-weight: 800;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-primary { background: var(--primary); grid-column: span 3; font-size: 19px; padding: 22px; }
@@ -178,6 +184,8 @@
         .btn-sos { background: var(--danger); }
         .btn-report { background: #8b5cf6; }
         .btn-share { background: #06b6d4; grid-column: span 3; }
+
+        body.high-contrast .action-btn { background: #000; color: #fff; border-color: #fff; }
 
         .result-box {
             margin-top: 25px; padding: 25px; background: var(--input-bg); border-radius: 18px; border: 2px solid var(--border); font-size: 17px; line-height: 1.7;
@@ -192,8 +200,8 @@
 <div class="app-container">
     <div class="header">
         <div>
-            <h2>AI Smart Accessibility — Maximum Sensitivity Radar</h2>
-            <div class="supervisor">نظام الرصد فائق الحساسية (حساسية قصوى للحوائط والعوائق)</div>
+            <h2>AI Smart Accessibility — Enterprise System</h2>
+            <div class="supervisor">نظام الرادار الفعلي، تحديد الموقع (GPS)، والإدخال الصوتي الكامل</div>
         </div>
         <div class="header-btns">
             <span class="status-badge">MAX SENSITIVITY</span>
@@ -203,24 +211,24 @@
 
     <div class="dashboard-grid">
         <div class="card-section" style="margin-bottom: 0;">
-            <label for="currentLocation">📍 الموقع الحالي:</label>
+            <label for="currentLocation">📍 الموقع الحالي (المدينة والشارع):</label>
             <div class="input-row">
-                <input type="text" id="currentLocation" placeholder="الموقع">
+                <input type="text" id="currentLocation" placeholder="اضغط تحديد لجلب موقعك الفعلي...">
                 <button type="button" class="btn-sm btn-gps" onclick="getLocationGPS()">تحديد</button>
             </div>
         </div>
         <div class="card-section" style="margin-bottom: 0;">
-            <label for="destination">🎯 الوجهة المطلوبة:</label>
+            <label for="destination">🎯 الوجهة المطلوبة (أو انطقها صوتياً):</label>
             <div class="input-row">
-                <input type="text" id="destination" placeholder="الوجهة">
-                <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()">🎤</button>
+                <input type="text" id="destination" placeholder="انطق الوجهة أو اكتبها...">
+                <button type="button" class="btn-sm btn-mic" onclick="startVoiceInput()" title="اضغط لتحديد الوجهة صوتياً">🎤</button>
             </div>
         </div>
     </div>
 
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي</button>
-        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل الكاميرا (حساسية قصوى للحوائط)</button>
+        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل الكاميرا (أقصى حساسية للحوائط)</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات</button>
@@ -228,7 +236,7 @@
 
     <div id="enterpriseCameraContainer" class="enterprise-camera-box">
         <div class="hud-overlay">
-            <div class="radar-tag">⚡ حساسية قصوى للعمق والحوائط</div>
+            <div class="radar-tag">⚡ رادار حوائط نشط (حساسية قصوى)</div>
             <div class="radar-tag" id="fpsCounter">FPS: 60</div>
         </div>
         
@@ -238,13 +246,13 @@
         </div>
 
         <div class="threat-alert-box">
-            <p id="enterpriseThreatStatus" class="threat-text">🛡️ رادار الحساسية القصوى يعمل بكامل طاقته...</p>
-            <div class="radar-tag" style="background: #1e293b; color: #f87171; border-color: #ef4444;">حساس جداً</div>
+            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الرادار يمسح الأفق بحثاً عن أي عائق أو حائط...</p>
+            <div class="radar-tag" style="background: #1e293b; color: #f87171; border-color: #ef4444;">نشط</div>
         </div>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> تم رفع عتبة وكثافة التقاط الحوائط لأعلى مستوى ممكن لتنبيهك مبكراً جداً...
+        <strong style="font-size: 18px;">حالة النظام:</strong> جاهز لتحديد الموقع (GPS) واستقبال الوجهة (صوتياً) ورصد الحوائط...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار البدء...</span>
         </div>
@@ -263,12 +271,77 @@
     let detectionInterval = null;
     let lastSpokenTime = 0;
 
-    function toggleHighContrast() { document.body.classList.toggle('high-contrast'); }
+    function toggleHighContrast() { 
+        document.body.classList.toggle('high-contrast'); 
+        speakText("تم تغيير نظام التباين والألوان.");
+    }
+
     function triggerSOS() { speakText("تم إطلاق نداء طوارئ المؤسسة."); }
     function reportObstacle() { speakText("تم تسجيل البلاغ في الشبكة."); }
     function shareLiveLocation() { speakText("تم مشاركة الإحداثيات."); }
-    function getLocationGPS() { document.getElementById('currentLocation').value = "المقر الرئيسي"; speakText("تم تحديد الموقع."); }
-    function startVoiceInput() { alert("الإدخال الصوتي جاهز."); }
+    
+    function getLocationGPS() {
+        const locationInput = document.getElementById('currentLocation');
+        if (!navigator.geolocation) {
+            alert("خدمة تحديد الموقع غير متوفرة في متصفحك.");
+            return;
+        }
+
+        speakText("جاري تحديد موقعك الجغرافي الحالي...");
+        locationInput.value = "جاري تحديد المدينة والشارع...";
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`);
+                const data = await response.json();
+                
+                const address = data.address || {};
+                const city = address.city || address.town || address.village || address.state || "منطقة غير محددة";
+                const street = address.road || address.suburb || address.neighbourhood || "شارع غير مسجل";
+                
+                const fullLocationText = `${city}, ${street}`;
+                locationInput.value = fullLocationText;
+                speakText("أنت الآن في: " + fullLocationText);
+            } catch (error) {
+                const fallbackText = `خط عرض ${lat.toFixed(4)}, خط طول ${lon.toFixed(4)}`;
+                locationInput.value = fallbackText;
+                speakText("تم تحديد إحداثيات الموقع بنجاح.");
+            }
+        }, (error) => {
+            alert("تعذر تحديد الموقع. تأكد من تفعيل إذن الـ GPS في المتصفح.");
+            locationInput.value = "";
+            speakText("تعذر تحديد الموقع الجغرافي.");
+        }, { timeout: 10000, maximumAge: 0, enableHighAccuracy: true });
+    }
+
+    function startVoiceInput() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert("متصفحك لا يدعم الإدخال الصوتي المباشر.");
+            return;
+        }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'ar-SA';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        speakText("تفضل، انطق اسم المقر أو الوجهة المطلوبة...");
+        
+        recognition.onresult = function(event) {
+            const speechResult = event.results[0][0].transcript;
+            document.getElementById('destination').value = speechResult;
+            speakText("تم تحديد الوجهة إلى: " + speechResult);
+        };
+        
+        recognition.onerror = function() {
+            speakText("لم أتمكن من سماع الصوت بوضوح، حاول مرة أخرى.");
+        };
+        
+        recognition.start();
+    }
 
     async function toggleEnterpriseCamera() {
         const container = document.getElementById('enterpriseCameraContainer');
@@ -279,8 +352,8 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            status.innerText = "جاري تفعيل الحساسية القصوى للرصد المبكر...";
-            speakText("تم تشغيل نظام الحساسية القصوى. سيتم رادار الحوائط والعوائق فور ظهورها في الأفق.");
+            status.innerText = "جاري تفعيل الحساسية القصوى للرصد المبكر للحوائط...";
+            speakText("تم تشغيل نظام الحساسية القصوى للرادار.");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -296,7 +369,6 @@
 
                 let previousFrameData = null;
 
-                // فحص فائق السرعة كل 50 ميلي ثانية وبأقصى استجابة بصرية ممكنة
                 detectionInterval = setInterval(() => {
                     if (!cameraActive || video.videoWidth === 0) return;
 
@@ -306,7 +378,6 @@
 
                     let leftSum = 0, rightSum = 0, centerSum = 0;
                     let leftCount = 0, rightCount = 0, centerCount = 0;
-                    let centerVariance = 0;
                     let centerPixels = [];
 
                     for (let y = 0; y < 120; y++) {
@@ -343,18 +414,15 @@
                     let guidanceMsg = "الطريق أمامك آمن.";
                     let isBlocked = false;
 
-                    // حساسية قصوى للحوائط الثابتة (تم توسيع نطاق التباين وكثافة السطح لأقصى درجة)
                     if (centerTextureUniformity < 35) {
                         isBlocked = true;
-                        guidanceMsg = "تنبيه مبكر، حائط أو سد أمامي على مسافة قريبة، استعد للانحراف فوراً.";
+                        guidanceMsg = "تنبيه مبكر، حائط أو سد أمامي على مسافة قريبة، استعد للانحراف.";
                     } 
-                    // حساسية قصوى لأي حركة طفيفة أو اقتراب جانبي أو أمامي
                     else if (previousFrameData) {
                         const diffLeft = Math.abs(leftAvg - previousFrameData.left);
                         const diffCenter = Math.abs(centerAvg - previousFrameData.center);
                         const diffRight = Math.abs(rightAvg - previousFrameData.right);
 
-                        // تم خفض الحد الأدنى للتغير إلى أقل رقم ممكن (8 فقط) لرصد أي اهتزاز أو تغير بصري فوراً
                         if (diffLeft > 8 || diffCenter > 8 || diffRight > 8) {
                             isBlocked = true;
                             if (diffLeft > diffCenter && diffLeft > diffRight) {
@@ -362,7 +430,7 @@
                             } else if (diffRight > diffCenter && diffRight > diffLeft) {
                                 guidanceMsg = "تغير في اليمين، اتحرك يساراً بحذر.";
                             } else {
-                                guidanceMsg = "تنبيه، عائق أمامي تم رصده، تفاداه الآن.";
+                                guidanceMsg = "تنبيه، عائق أمامي تم رصده.";
                             }
                         }
                     }
@@ -374,7 +442,6 @@
                         status.innerHTML = `🚨 <span style="color: #f87171; font-weight: 900;">${guidanceMsg}</span>`;
                         
                         const now = Date.now();
-                        // نطق متكرر وسريع (كل 700 ملي ثانية لضمان الانتباه الفوري)
                         if (now - lastSpokenTime > 700) {
                             speakText(guidanceMsg);
                             lastSpokenTime = now;
@@ -400,9 +467,23 @@
     }
 
     function startNavigation() {
-        speakText("تم بدء نظام الحساسية القصوى.");
+        const loc = document.getElementById('currentLocation').value;
+        const dest = document.getElementById('destination').value;
+        
+        if(!loc) {
+            speakText("الرجاء تحديد موقعك الحالي أولاً.");
+            alert("يرجى تحديد موقعك الحالي أولاً.");
+            return;
+        }
+        if(!dest) {
+            speakText("الرجاء تحديد الوجهة المطلوبة أولاً.");
+            alert("يرجى تحديد الوجهة أو نطقها عبر الميكروفون أولاً.");
+            return;
+        }
+        
+        speakText("تم بدء نظام الملاحة من " + loc + " إلى المقر: " + dest);
         document.getElementById('stepBox').style.display = 'block';
-        document.getElementById('stepText').innerText = "الرادار يعمل بأقصى طاقة استشعار.";
+        document.getElementById('stepText').innerText = `الملاحة مفعلة من (${loc}) نحو: ${dest}`;
     }
 
     function speakText(txt) {

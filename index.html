@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Smart Accessibility — Wall & Obstacle Early Detector</title>
+    <title>AI Smart Accessibility — Maximum Sensitivity System</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%);
@@ -64,7 +64,7 @@
         .header-btns { display: flex; gap: 15px; align-items: center; }
         .btn-theme { background: #334155; color: #fff; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; }
         
-        .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+        .status-badge { font-size: 14px; padding: 8px 16px; border-radius: 10px; font-weight: bold; background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
 
         .dashboard-grid {
             display: grid;
@@ -95,7 +95,7 @@
 
         .enterprise-camera-box {
             background: #000000;
-            border: 3px solid #3b82f6;
+            border: 3px solid #ef4444;
             border-radius: 25px;
             overflow: hidden;
             position: relative;
@@ -134,8 +134,8 @@
 
         .radar-tag {
             background: rgba(15, 23, 42, 0.85);
-            border: 2px solid #3b82f6;
-            color: #60a5fa;
+            border: 2px solid #ef4444;
+            color: #f87171;
             padding: 8px 16px;
             border-radius: 12px;
             font-size: 14px;
@@ -174,7 +174,7 @@
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-primary { background: var(--primary); grid-column: span 3; font-size: 19px; padding: 22px; }
-        .btn-enterprise-cam { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); grid-column: span 3; font-size: 20px; border: 2px solid #fbbf24; }
+        .btn-enterprise-cam { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); grid-column: span 3; font-size: 20px; border: 2px solid #f87171; }
         .btn-sos { background: var(--danger); }
         .btn-report { background: #8b5cf6; }
         .btn-share { background: #06b6d4; grid-column: span 3; }
@@ -192,11 +192,11 @@
 <div class="app-container">
     <div class="header">
         <div>
-            <h2>AI Smart Accessibility — Wall & Obstacle Detector</h2>
-            <div class="supervisor">نظام كشف الحوائط والعوائق الثابتة من مسافة مبكرة</div>
+            <h2>AI Smart Accessibility — Maximum Sensitivity Radar</h2>
+            <div class="supervisor">نظام الرصد فائق الحساسية (حساسية قصوى للحوائط والعوائق)</div>
         </div>
         <div class="header-btns">
-            <span class="status-badge">Wall Scanner Active</span>
+            <span class="status-badge">MAX SENSITIVITY</span>
             <button class="btn-theme" onclick="toggleHighContrast()">👁️ تباين عالي</button>
         </div>
     </div>
@@ -220,7 +220,7 @@
 
     <div class="actions-grid">
         <button class="action-btn btn-primary" onclick="startNavigation()">🚀 بدء نظام التوجيه الذكي</button>
-        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل كاميرا كشف الحوائط المبكر</button>
+        <button class="action-btn btn-enterprise-cam" onclick="toggleEnterpriseCamera()">🛰️ تشغيل الكاميرا (حساسية قصوى للحوائط)</button>
         <button class="action-btn btn-sos" onclick="triggerSOS()">🚨 طوارئ SOS</button>
         <button class="action-btn btn-report" onclick="reportObstacle()">🛠️ تسجيل عائق</button>
         <button class="action-btn btn-share" onclick="shareLiveLocation()">📡 مشاركة الإحداثيات</button>
@@ -228,7 +228,7 @@
 
     <div id="enterpriseCameraContainer" class="enterprise-camera-box">
         <div class="hud-overlay">
-            <div class="radar-tag">🧱 كشف الحوائط والثوابت نشط</div>
+            <div class="radar-tag">⚡ حساسية قصوى للعمق والحوائط</div>
             <div class="radar-tag" id="fpsCounter">FPS: 60</div>
         </div>
         
@@ -238,13 +238,13 @@
         </div>
 
         <div class="threat-alert-box">
-            <p id="enterpriseThreatStatus" class="threat-text">🛡️ الكاميرا تمسح الأفق بحثاً عن أي حائط أو عائق ثابت...</p>
-            <div class="radar-tag" style="background: #1e293b; color: #34d399; border-color: #10b981;">جاهز</div>
+            <p id="enterpriseThreatStatus" class="threat-text">🛡️ رادار الحساسية القصوى يعمل بكامل طاقته...</p>
+            <div class="radar-tag" style="background: #1e293b; color: #f87171; border-color: #ef4444;">حساس جداً</div>
         </div>
     </div>
 
     <div class="result-box" id="outputResult">
-        <strong style="font-size: 18px;">حالة النظام:</strong> تمت إضافة رادار الحوائط الثابتة للتحذير المبكر قبل الاقتراب...
+        <strong style="font-size: 18px;">حالة النظام:</strong> تم رفع عتبة وكثافة التقاط الحوائط لأعلى مستوى ممكن لتنبيهك مبكراً جداً...
         <div class="step-container" id="stepBox">
             <span id="stepText" style="font-weight: 800; font-size: 18px;">بانتظار البدء...</span>
         </div>
@@ -279,8 +279,8 @@
 
         if (!cameraActive) {
             container.style.display = 'block';
-            status.innerText = "جاري تشغيل رادار الحوائط...";
-            speakText("تم تشغيل نظام كشف الحوائط المبكر. سأحذرك قبل الاقتراب من أي حائط.");
+            status.innerText = "جاري تفعيل الحساسية القصوى للرصد المبكر...";
+            speakText("تم تشغيل نظام الحساسية القصوى. سيتم رادار الحوائط والعوائق فور ظهورها في الأفق.");
 
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -296,7 +296,7 @@
 
                 let previousFrameData = null;
 
-                // فحص فائق السرعة كل 70 ميلي ثانية لكشف الحركة والثوابت
+                // فحص فائق السرعة كل 50 ميلي ثانية وبأقصى استجابة بصرية ممكنة
                 detectionInterval = setInterval(() => {
                     if (!cameraActive || video.videoWidth === 0) return;
 
@@ -306,8 +306,6 @@
 
                     let leftSum = 0, rightSum = 0, centerSum = 0;
                     let leftCount = 0, rightCount = 0, centerCount = 0;
-                    
-                    // متغيرات لقياس "التسطح والتجانس في المنتصف" (لكشف الحوائط القريبة الثابتة)
                     let centerVariance = 0;
                     let centerPixels = [];
 
@@ -322,7 +320,7 @@
                             } else if (x < 106) {
                                 centerSum += brightness;
                                 centerCount++;
-                                if (y > 30 && y < 90) { // التركيز على منتصف الكادر حيث يظهر الحائط أمام الشخص
+                                if (y > 20 && y < 100) {
                                     centerPixels.push(brightness);
                                 }
                             } else {
@@ -336,36 +334,35 @@
                     const centerAvg = centerSum / centerCount;
                     const rightAvg = rightSum / rightCount;
 
-                    // حساب تباين المنتصف (الحائط الثابت القريب يكون له تباين منخفض أو كتلة لونية مسطحة تملأ الكادر)
                     let varianceSum = 0;
                     for (let i = 0; i < centerPixels.length; i++) {
                         varianceSum += Math.abs(centerPixels[i] - centerAvg);
                     }
                     let centerTextureUniformity = varianceSum / (centerPixels.length || 1);
 
-                    let guidanceMsg = "الطريق أمامك آمن، استمر.";
+                    let guidanceMsg = "الطريق أمامك آمن.";
                     let isBlocked = false;
 
-                    // 1. فحص الحوائط الثابتة المقتربة (لو المنتصف بقى سطح ثابت متجانس ومقترب)
-                    // إذا كان تباين المنتصف منخفضاً جداً (سطح جدار مسطح) ومتوسط الإضاءة يملأ الرؤية
-                    if (centerTextureUniformity < 18 && (centerAvg < 50 || centerAvg > 200)) {
+                    // حساسية قصوى للحوائط الثابتة (تم توسيع نطاق التباين وكثافة السطح لأقصى درجة)
+                    if (centerTextureUniformity < 35) {
                         isBlocked = true;
-                        guidanceMsg = "انتبه، حائط أو سد مقترب أمامك مباشرة، استعد للتوقف أو الانحراف.";
+                        guidanceMsg = "تنبيه مبكر، حائط أو سد أمامي على مسافة قريبة، استعد للانحراف فوراً.";
                     } 
-                    // 2. فحص الحركة المفاجئة والعوائق الجانبية أو المتحركة
+                    // حساسية قصوى لأي حركة طفيفة أو اقتراب جانبي أو أمامي
                     else if (previousFrameData) {
                         const diffLeft = Math.abs(leftAvg - previousFrameData.left);
                         const diffCenter = Math.abs(centerAvg - previousFrameData.center);
                         const diffRight = Math.abs(rightAvg - previousFrameData.right);
 
-                        if (diffLeft > 16 || diffCenter > 16 || diffRight > 16) {
+                        // تم خفض الحد الأدنى للتغير إلى أقل رقم ممكن (8 فقط) لرصد أي اهتزاز أو تغير بصري فوراً
+                        if (diffLeft > 8 || diffCenter > 8 || diffRight > 8) {
                             isBlocked = true;
                             if (diffLeft > diffCenter && diffLeft > diffRight) {
-                                guidanceMsg = "الطريق مغلق على اليسار، اتحرك يميناً.";
+                                guidanceMsg = "تغير في اليسار، اتحرك يميناً بحذر.";
                             } else if (diffRight > diffCenter && diffRight > diffLeft) {
-                                guidanceMsg = "الطريق مغلق على اليمين، اتحرك يساراً.";
+                                guidanceMsg = "تغير في اليمين، اتحرك يساراً بحذر.";
                             } else {
-                                guidanceMsg = "تنبيه، عائق أمامك، اتحرك يميناً لتفاديه.";
+                                guidanceMsg = "تنبيه، عائق أمامي تم رصده، تفاداه الآن.";
                             }
                         }
                     }
@@ -377,15 +374,16 @@
                         status.innerHTML = `🚨 <span style="color: #f87171; font-weight: 900;">${guidanceMsg}</span>`;
                         
                         const now = Date.now();
-                        if (now - lastSpokenTime > 1000) {
+                        // نطق متكرر وسريع (كل 700 ملي ثانية لضمان الانتباه الفوري)
+                        if (now - lastSpokenTime > 700) {
                             speakText(guidanceMsg);
                             lastSpokenTime = now;
                         }
                     } else {
-                        status.innerHTML = `✅ <span style="color: #34d399;">الطريق آمن، استمر في السير.</span>`;
+                        status.innerHTML = `✅ <span style="color: #34d399;">الرادار نشط ويمسح الأفق...</span>`;
                     }
 
-                }, 70);
+                }, 50);
 
             } catch (err) {
                 alert("تعذر تشغيل الكاميرا.");
@@ -402,9 +400,9 @@
     }
 
     function startNavigation() {
-        speakText("تم بدء نظام الملاحة الشامل.");
+        speakText("تم بدء نظام الحساسية القصوى.");
         document.getElementById('stepBox').style.display = 'block';
-        document.getElementById('stepText').innerText = "الكاميرا تفحص الحوائط والعوائق مسبقاً.";
+        document.getElementById('stepText').innerText = "الرادار يعمل بأقصى طاقة استشعار.";
     }
 
     function speakText(txt) {
@@ -412,7 +410,7 @@
             window.speechSynthesis.cancel();
             const s = new SpeechSynthesisUtterance(txt);
             s.lang = 'ar-SA';
-            s.rate = 1.05;
+            s.rate = 1.1;
             window.speechSynthesis.speak(s);
         }
     }
